@@ -1,3 +1,4 @@
 node_modules
-bower_components
 *.log
+src/dist
+test/app/__snapshots__

@@ -2,9 +2,15 @@
   "name": "npp",
   "version": "0.0.1",
   "description": "NPM Package Pricer",
-  "main": "index.js",
+  "main": "src/api/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": "npm test && npm run build",
+    "test": "jest --no-cache --verbose",
+    "test-factory": "jest --no-cache --verbose --watch --notify",
+    "build-debug": "babel src/api -d src/dist/api --source-maps",
+    "build": "webpack -d && babel src/api -d src/dist/api && echo Build completed.",
+    "dev": "concurrently \"nodemon --ignore src/dist --ignore src/app --verbose --exec babel-node src/api/index.js --self-hosted\" \"webpack -d --watch\"",
+    "start": "node src/dist/api/index.js --self-hosted"
   },
   "repository": {
     "type": "git",
@@ -20,5 +26,48 @@
   "bugs": {
     "url": "https://github.com/gghez/npp/issues"
   },
-  "homepage": "https://github.com/gghez/npp#readme"
+  "homepage": "https://github.com/gghez/npp#readme",
+  "babel": {
+    "presets": [
+      "latest",
+      "stage-2",
+      "react"
+    ]
+  },
+  "jest": {
+    "testPathDirs": [
+      "test"
+    ]
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.20.0",
+    "babel-eslint": "^7.1.1",
+    "babel-jest": "^17.0.2",
+    "babel-loader": "^6.2.9",
+    "babel-preset-latest": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-2": "^6.18.0",
+    "concurrently": "^3.1.0",
+    "eslint": "^3.12.0",
+    "eslint-plugin-jest": "^1.0.2",
+    "eslint-plugin-react": "^6.8.0",
+    "fbjs": "^0.8.6",
+    "jest": "^17.0.3",
+    "nodemon": "^1.11.0",
+    "object-assign": "^4.1.0",
+    "react-test-renderer": "^15.4.1",
+    "webpack": "^1.14.0"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.20.0",
+    "body-parser": "^1.15.2",
+    "cheerio": "^0.22.0",
+    "express": "^4.14.0",
+    "morgan": "^1.7.0",
+    "neo4j-driver": "^1.1.0-M03",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1",
+    "request": "^2.79.0"
+  }
 }
