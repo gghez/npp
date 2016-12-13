@@ -2,6 +2,7 @@ import express from "express";
 import { router as api } from "./api";
 import morgan from "morgan";
 import { debuglog } from "util";
+import path from "path";
 
 const logger = debuglog('main');
 
@@ -16,10 +17,13 @@ app.use(morgan(isDev ? 'dev' : 'combined'));
 app.use('/api/', api);
 
 if (isDev || selfHosted) {
-    app.use('/web', express.static(__dirname + '/../'));
+    app.use('/', express.static(path.resolve(__dirname, '../web/')));
+    app.get('*', (req, res)=>{
+        res.sendFile(path.resolve(__dirname, '../web/index.html'));
+    });
 }
 
-app.use((err, req, res, next) => {
+app.use((err, req, res, next) => { // eslint-disable-line
     logger(err && err.stack || err);
     res.status(500).send({ error: err.message });
 });

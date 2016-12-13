@@ -1,4 +1,4 @@
 node_modules
 *.log
-src/dist
-test/app/__snapshots__
+**/dist
+__test__/**/__snapshots__

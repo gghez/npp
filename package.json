@@ -6,11 +6,11 @@
   "scripts": {
     "postinstall": "npm test && npm run build",
     "test": "jest --no-cache --verbose",
-    "test-factory": "jest --no-cache --verbose --watch --notify",
-    "build-debug": "babel src/api -d src/dist/api --source-maps",
-    "build": "webpack -d && babel src/api -d src/dist/api && echo Build completed.",
-    "dev": "concurrently \"nodemon --ignore src/dist --ignore src/app --verbose --exec babel-node src/api/index.js --self-hosted\" \"webpack -d --watch\"",
-    "start": "node src/dist/api/index.js --self-hosted"
+    "test-factory": "jest --no-cache --watch --notify",
+    "build-debug": "babel src/api -d src/api/dist --source-maps",
+    "build": "webpack -d && babel src/api -d src/api/dist && echo Build completed.",
+    "dev": "concurrently \"nodemon --ignore src/web --verbose --exec babel-node src/api/index.js --self-hosted\" \"webpack -d --watch\"",
+    "start": "node src/api/dist/index.js --self-hosted"
   },
   "repository": {
     "type": "git",
@@ -34,11 +34,7 @@
       "react"
     ]
   },
-  "jest": {
-    "testPathDirs": [
-      "test"
-    ]
-  },
+  "jest": {},
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-core": "^6.20.0",
@@ -68,6 +64,7 @@
     "neo4j-driver": "^1.1.0-M03",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
+    "react-router": "^3.0.0",
     "request": "^2.79.0"
   }
 }

@@ -6,7 +6,7 @@ import { NpmApi } from "./npm/NpmApi";
 
 export const router = Router();
 
-const driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "____"));
+const driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "neo4j"));
 
 router.get('/npm-package/:name', (req, res, next) => {
     const npmApi = new NpmApi();
