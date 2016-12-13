@@ -5,31 +5,26 @@ export class SearchBar extends React.Component {
     constructor(props) {
         super(props);
 
-        this.handleKeyPress = this.handleKeyPress.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-
-        this.state={search: ''};
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    componentDidMount(){
-        this.setState({search: this.props.search});
-    }
-
-    handleChange(e) {
-        this.setState({ search: e.target.value });
-    }
-
-    handleKeyPress(e) {
-        if (e.key == 'Enter') {
-            browserHistory.push('/search/' + this.state.search);
+    componentDidUpdate(prevProps){
+        if (prevProps.search != this.props.search && this.props.search){
+            this.input.value = this.props.search;
         }
     }
 
+    handleSubmit(e) {
+        browserHistory.push('/search/' + this.input.value);
+        e.preventDefault();
+    }
+
     render() {
-        return <input type="search"
-            onChange={this.handleChange}
-            onKeyPress={this.handleKeyPress}
-            value={this.state.search} />
+        return <form onSubmit={this.handleSubmit}>
+            <input type="search"
+                    ref={(input) => this.input = input}
+                    defaultValue={this.props.search} />
+            </form>;
     }
 }
 
