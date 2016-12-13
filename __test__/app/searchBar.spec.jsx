@@ -8,10 +8,23 @@ test('SearchBar render input[type=search]', () => {
 
     let tree = component.toJSON();
 
-    expect(tree.type).toEqual('input');
-    expect(tree.props.type).toEqual('search');
-    expect(tree.props.value).toEqual('pkg');
-
     // ensure same result as previous test run
     expect(tree).toMatchSnapshot();
+
+    // uncomment on future JEST release
+    // expect(tree).toMatchObject({
+    //     type: 'form',
+    //     children: [{
+    //         type: 'input',
+    //         props: {
+    //             type: 'search',
+    //             value: 'pkg'
+    //         }
+    //     }]
+    // });
+
+    expect(tree.type).toEqual('form');
+    expect(tree.children[0].type).toEqual('input');
+    expect(tree.children[0].props.type).toEqual('search');
+    expect(tree.children[0].props.defaultValue).toEqual('pkg');
 });

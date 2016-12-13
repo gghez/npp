@@ -24,6 +24,10 @@
             "taskName": "test",
             "args": ["run", "test"],
             "isTestCommand": true
+        },
+        {
+            "taskName": "import-test",
+            "args": ["run", "import", "import-tree", "neo4j"]
         }
     ]
 }

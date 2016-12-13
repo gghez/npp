@@ -1,8 +1,8 @@
-import { NpmDataProvider } from "../../../src/api/pricer/NpmDataProvider";
+import { NpmDataProvider } from "../../../src/api/data/NpmDataProvider";
 
 test('get() combines npm api data correctly', async () => {
     const npmApi = {
-        info: jest.fn(() => ({ time: {}, versions: {} })),
+        info: jest.fn(() => ({})),
         downloads: jest.fn(() => ({}))
     };
     const provider = new NpmDataProvider(npmApi)
@@ -23,12 +23,11 @@ test('get() retrieves expected data from npm api', async () => {
             v2: 'infoTimev2'
         },
         author: 'infoAuthor',
-        maintainers: [{ name: 'infoMain1' }, { name: 'infoMain2' }],
+        maintainers: [{ name: 'infoMain1' },'infoMain2 <infoMain2email>'],
         repository: { url: 'infoRepoUrl' },
-        dependencies: [{ dep1: 'vdep1', dep2: 'vdep2' }],
         versions: {
-            'v1': { maintainers: [{ name: 'v1Main1' }, { name: 'v1Main2' }] },
-            'v2': { maintainers: [{ name: 'v2Main1' }, { name: 'v2Main2' }] }
+            'v1': { maintainers: [{ name: 'v1Main1' }, 'v1Main2 <v1Main2email>'] },
+            'v2': { maintainers: [{ name: 'v2Main1' }, 'v2Main2 <v2Main2email>'], dependencies: [{ dep1: 'vdep1', dep2: 'vdep2' }] }
         }
     }
     const downloadsData = {
@@ -47,31 +46,17 @@ test('get() retrieves expected data from npm api', async () => {
         description: infoData.description,
         created: infoData.time.created,
         modified: infoData.time.modified,
-        author: infoData.author,
-        maintainers: infoData.maintainers,
+        author: { name: infoData.author },
+        maintainers: [{ name: 'infoMain1' }, { name: 'infoMain2', email: 'infoMain2email' }],
         repository: infoData.repository.url,
-        dependencies: infoData.dependencies,
-        versions: Object.keys(infoData.versions).reduce((prev, cur) => {
-            let npmVersion = infoData.versions[cur];
-            prev[cur] = {
-                created: infoData.time[cur],
-                maintainers: npmVersion.maintainers
-            }
-            return prev;
-        }, {}),
+        dependencies: Object.keys(infoData.versions.v2.dependencies),
         downloads: downloadsData.downloads
     });
 });
 
 test('get() retrieves repository when string', async () => {
     const infoData = {
-        time: {
-            created: 'infoTimeCreated',
-            modified: 'infoTimeModified'
-        },
-        repository:  'infoRepoUrl' ,
-        versions: {
-        }
+        repository: 'infoRepoUrl'
     }
     const downloadsData = {
         downloads: 7001
