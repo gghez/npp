@@ -49,7 +49,7 @@ test('get() retrieves expected data from npm api', async () => {
         modified: infoData.time.modified,
         author: infoData.author,
         maintainers: infoData.maintainers,
-        repository: infoData.repository && infoData.repository.url,
+        repository: infoData.repository.url,
         dependencies: infoData.dependencies,
         versions: Object.keys(infoData.versions).reduce((prev, cur) => {
             let npmVersion = infoData.versions[cur];
@@ -61,4 +61,28 @@ test('get() retrieves expected data from npm api', async () => {
         }, {}),
         downloads: downloadsData.downloads
     });
+});
+
+test('get() retrieves repository when string', async () => {
+    const infoData = {
+        time: {
+            created: 'infoTimeCreated',
+            modified: 'infoTimeModified'
+        },
+        repository:  'infoRepoUrl' ,
+        versions: {
+        }
+    }
+    const downloadsData = {
+        downloads: 7001
+    };
+
+    const npmApi = {
+        info: jest.fn(() => infoData),
+        downloads: jest.fn(() => downloadsData)
+    };
+    const provider = new NpmDataProvider(npmApi);
+    const pkg = await provider.get('pkg');
+
+    expect(pkg.repository).toEqual('infoRepoUrl');
 });

@@ -17,7 +17,7 @@ export class NpmDataProvider {
                 modified: info.time.modified,
                 author: info.author,
                 maintainers: info.maintainers,
-                repository: info.repository && info.repository.url,
+                repository: typeof info.repository == 'string' ? info.repository : (info.repository && info.repository.url),
                 dependencies: info.dependencies,
                 versions: Object.keys(info.versions).reduce((prev, cur) => {
                     let npmVersion = info.versions[cur];
