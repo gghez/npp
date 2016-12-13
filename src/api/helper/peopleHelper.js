@@ -4,6 +4,7 @@ export function getPeopleInfo(people) {
     }
 
     if (typeof people == 'string') {
+        // https://regex101.com/r/CZtKRc/1
         const m = /(\w+)?\s*(<(.+?)>)?\s*(\((.+?)\))?/.exec(people);
         if (m) {
             return {
