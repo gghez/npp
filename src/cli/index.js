@@ -1,21 +1,26 @@
+/* eslint no-console: off */
 import program from "commander";
 import chalk from "chalk";
 import { importPackage } from "./import";
+import _ from "lodash";
 
-program
-    .command('import-tree <pkg> [otherPkgs...]')
+const importNpm = program
+    .command('npm-package <pkg>')
     .description('Import package and dependency tree into local graph database')
-    .action(async (pkg, otherPkgs) => {
-        let pkgList = [pkg];
-        if (Array.isArray(otherPkgs)) {
-            pkgList = pkgList.concat(otherPkgs);
+    .option('--verbose', 'Display additional intermediate information')
+    .option('--recursive', 'Import dependencies when found recursively')
+    .action(async (pkg) => {
+        console.log(chalk.yellow('Import package:'), pkg);
+
+        try {
+            await importPackage(pkg, _.pick(importNpm, ['verbose', 'recursive']));
+        } catch (ex) {
+            console.error('Failed to import', ex);
+            process.exit(1);
         }
 
-        console.log(chalk.yellow('Import packages:'), pkgList.join(', '));
-
-        await Promise.all(pkgList.map(importPackage));
-        console.log('Import completed.');
+        console.log(chalk.yellow('Import completed.'));
+        process.exit(0);
     });
 
 program.parse(process.argv);
-console.log('end.');

@@ -8,21 +8,10 @@ export class NpmScoreCalculator {
     static BIRTH_WEIGHT = 1;
 
     getScoreData(pkg) {
-        let contributors = [];
-        if (pkg.author) {
-            contributors.push(typeof pkg.author == 'string' ? { name: pkg.author } : pkg.author);
-        }
-
-        if (Array.isArray(pkg.maintainers)) {
-            contributors = contributors.concat(pkg.maintainers);
-        }
-
-        contributors = _.uniqWith(contributors, (c1, c2) => c1.name == c2.name || c1.email == c2.email);
-
         return {
             birthDate: pkg.created,
             lastActivity: pkg.modified,
-            people: contributors.length,
+            people: pkg.contributors.length,
             downloads: pkg.downloads
         }
     }

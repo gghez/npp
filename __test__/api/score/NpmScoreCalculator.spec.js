@@ -3,8 +3,7 @@ import { NpmScoreCalculator } from "../../../src/api/score/NpmScoreCalculator";
 const testPkg = {
     created: '2015-12-09T20:13:55.558Z',
     modified: '2016-12-09T20:13:55.558Z',
-    author: {        name: 'main3',        email: 'main1mail'    },
-    maintainers: [{ name: 'main1', email: 'main1mail' }, { name: 'main2', email: 'main2mail' }],
+    contributors: [{ name: 'main1', email: 'main1mail' }, { name: 'main2', email: 'main2mail' }],
     downloads: 7000
 };
 
@@ -36,16 +35,16 @@ test('price() returns 10 when identical packages', () => {
     expect(score).toEqual(10);
 });
 
-test('price() takes contributors into account #1', () => {
+test('score() takes contributors into account #1', () => {
     const testSimilarPackages = [
         {
             created: '2015-12-09T20:13:55.558Z',
             modified: '2016-12-09T20:13:55.558Z',
-            author: {
-                name: 'main3',
-                email: 'main3mail'
-            },
-            maintainers: [{ name: 'main1', email: 'main1mail' }, { name: 'main2', email: 'main2mail' }],
+            contributors: [
+                { name: 'main3', email: 'main3mail' },
+                { name: 'main1', email: 'main1mail' },
+                { name: 'main2', email: 'main2mail' }
+            ],
             downloads: 7000
         }
     ];
@@ -56,16 +55,12 @@ test('price() takes contributors into account #1', () => {
     expect(score).toEqual(9);
 });
 
-test('price() takes contributors into account #2', () => {
+test('score() takes contributors into account #2', () => {
     const testSimilarPackages = [
         {
             created: '2015-12-09T20:13:55.558Z',
             modified: '2016-12-09T20:13:55.558Z',
-            author: {
-                name: 'main2',
-                email: 'main1mail'
-            },
-            maintainers: [{ name: 'main1', email: 'main1mail' }, { name: 'main2', email: 'main2mail' }],
+            contributors: [{ name: 'main2', email: 'main2mail' }],
             downloads: 7000
         }
     ];
@@ -76,16 +71,12 @@ test('price() takes contributors into account #2', () => {
     expect(score).toEqual(10);
 });
 
-test('price() takes last activity into account #1', () => {
+test('score() takes last activity into account #1', () => {
     const testSimilarPackages = [
         {
             created: '2015-12-09T20:13:55.558Z',
             modified: '2016-12-09T20:13:55.559Z',
-            author: {
-                name: 'main3',
-                email: 'main1mail'
-            },
-            maintainers: [{ name: 'main1', email: 'main1mail' }, { name: 'main2', email: 'main2mail' }],
+            contributors: [{ name: 'main1', email: 'main1mail' }, { name: 'main2', email: 'main2mail' }],
             downloads: 7000
         }
     ];
@@ -96,16 +87,12 @@ test('price() takes last activity into account #1', () => {
     expect(score).toEqual(9);
 });
 
-test('price() takes last activity into account #2', () => {
+test('score() takes last activity into account #2', () => {
     const testSimilarPackages = [
         {
             created: '2015-12-09T20:13:55.558Z',
             modified: '2016-12-09T20:13:55.557Z',
-            author: {
-                name: 'main3',
-                email: 'main1mail'
-            },
-            maintainers: [{ name: 'main1', email: 'main1mail' }, { name: 'main2', email: 'main2mail' }],
+            contributors: [{ name: 'main1', email: 'main1mail' }, { name: 'main2', email: 'main2mail' }],
             downloads: 7000
         }
     ];
@@ -116,16 +103,12 @@ test('price() takes last activity into account #2', () => {
     expect(score).toEqual(10);
 });
 
-test('price() takes downloads into account #1', () => {
+test('score() takes downloads into account #1', () => {
     const testSimilarPackages = [
         {
             created: '2015-12-09T20:13:55.558Z',
             modified: '2016-12-09T20:13:55.558Z',
-            author: {
-                name: 'main3',
-                email: 'main1mail'
-            },
-            maintainers: [{ name: 'main1', email: 'main1mail' }, { name: 'main2', email: 'main2mail' }],
+            contributors: [{ name: 'main1', email: 'main1mail' }, { name: 'main2', email: 'main2mail' }],
             downloads: 15600
         }
     ];
@@ -136,16 +119,12 @@ test('price() takes downloads into account #1', () => {
     expect(score).toEqual(7);
 });
 
-test('price() takes birth date into account #1', () => {
+test('score() takes birth date into account #1', () => {
     const testSimilarPackages = [
         {
             created: '2014-12-09T20:13:55.558Z',
             modified: '2016-12-09T20:13:55.558Z',
-            author: {
-                name: 'main3',
-                email: 'main1mail'
-            },
-            maintainers: [{ name: 'main1', email: 'main1mail' }, { name: 'main2', email: 'main2mail' }],
+            contributors: [{ name: 'main1', email: 'main1mail' }, { name: 'main2', email: 'main2mail' }],
             downloads: 7000
         }
     ];
@@ -156,16 +135,12 @@ test('price() takes birth date into account #1', () => {
     expect(score).toEqual(10);
 });
 
-test('price() takes birth date into account #2', () => {
+test('score() takes birth date into account #2', () => {
     const testSimilarPackages = [
         {
             created: '2016-12-10T20:13:55.558Z',
             modified: '2016-12-09T20:13:55.558Z',
-            author: {
-                name: 'main3',
-                email: 'main1mail'
-            },
-            maintainers: [{ name: 'main1', email: 'main1mail' }, { name: 'main2', email: 'main2mail' }],
+            contributors: [{ name: 'main1', email: 'main1mail' }, { name: 'main2', email: 'main2mail' }],
             downloads: 7000
         }
     ];
