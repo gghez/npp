@@ -84,7 +84,7 @@ test('score() takes last activity into account #1', () => {
     const calc = new NpmScoreCalculator();
     const score = calc.score(testPkg, testSimilarPackages);
 
-    expect(score).toEqual(9);
+    expect(score).toEqual(9.7);
 });
 
 test('score() takes last activity into account #2', () => {
@@ -116,7 +116,7 @@ test('score() takes downloads into account #1', () => {
     const calc = new NpmScoreCalculator();
     const score = calc.score(testPkg, testSimilarPackages);
 
-    expect(score).toEqual(7);
+    expect(score).toEqual(7.8);
 });
 
 test('score() takes downloads into account #2', () => {

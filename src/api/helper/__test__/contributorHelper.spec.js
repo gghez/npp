@@ -1,4 +1,9 @@
-import { normalizeContributor, contributorEquals, mergedContributors } from "../contributorHelper";
+import {
+    normalizeContributor,
+    contributorEquals,
+    mergedContributors,
+    extractContributors
+} from "../contributorHelper";
 
 [
     { input: 'Barney Rubble <b@rubble.com> (http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
@@ -126,9 +131,50 @@ import { normalizeContributor, contributorEquals, mergedContributors } from "../
     }
 ].forEach((testParams, i) => {
 
-    test(`mergedContributors() Scenario #${i+1}`, () => {
+    test(`mergedContributors() Scenario #${i + 1}`, () => {
         const merged = mergedContributors(testParams.contributors);
         expect(merged).toEqual(testParams.expected);
+    });
+
+});
+
+[
+    {
+        desc: 'only author',
+        pkg: {
+            author: { name: 'Greg' },
+            maintainers: []
+        },
+        expected: [{ name: 'Greg' }]
+    },
+    {
+        desc: 'only maintainers',
+        pkg: {
+            maintainers: [{ name: 'Greg' }]
+        },
+        expected: [{ name: 'Greg' }]
+    },
+    {
+        desc: 'author and maintainers',
+        pkg: {
+            author: { name: 'Greg' },
+            maintainers: [{ name: 'Jony' }, { name: 'Gulien' }]
+        },
+        expected: [{ name: 'Greg' }, { name: 'Jony' }, { name: 'Gulien' }]
+    },
+    {
+        desc: 'duplicates in author and maintainers',
+        pkg: {
+            author: { name: 'Greg' },
+            maintainers: [{ name: 'Greg', email: 'greg@greg.com' }, { name: 'Gulien' }]
+        },
+        expected: [{ name: 'Greg', email: 'greg@greg.com' }, { name: 'Gulien' }]
+    }
+].forEach(testParams => {
+
+    test(`contributors() with ${testParams.desc}`, () => {
+        const contribs = extractContributors(testParams.pkg);
+        expect(contribs).toEqual(testParams.expected);
     });
 
 });

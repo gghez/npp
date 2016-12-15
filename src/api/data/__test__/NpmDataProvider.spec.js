@@ -1,4 +1,5 @@
 import { NpmDataProvider } from "../NpmDataProvider";
+import _ from "lodash";
 
 test('get() combines npm api data correctly', async () => {
     const npmApi = {
@@ -12,7 +13,7 @@ test('get() combines npm api data correctly', async () => {
     expect(npmApi.downloads).toHaveBeenCalledWith('pkg', 'last-month');
 });
 
-test('get() retrieves uses api.info() created', async () => {
+test('get() uses api.info() created', async () => {
     const infoData = {
         time: {
             created: 'infoTimeCreated'
@@ -29,7 +30,7 @@ test('get() retrieves uses api.info() created', async () => {
     expect(pkg.created).toEqual(infoData.time.created);
 });
 
-test('get() retrieves uses api.info() modified', async () => {
+test('get() uses api.info() modified', async () => {
     const infoData = {
         time: {
             modified: 'infoTimeCreated'
@@ -50,7 +51,10 @@ test('get() retrieves dependencies from last version', async () => {
     const infoData = {
         versions: {
             'v1': { maintainers: [{ name: 'v1Main1' }, 'v1Main2 <v1Main2email>'] },
-            'v2': { maintainers: [{ name: 'v2Main1' }, 'v2Main2 <v2Main2email>'], dependencies: [{ dep1: 'vdep1', dep2: 'vdep2' }] }
+            'v2': {
+                maintainers: [{ name: 'v2Main1' }, 'v2Main2 <v2Main2email>'],
+                dependencies: [{ dep1: 'vdep1', dep2: 'vdep2' }]
+            }
         }
     }
 
@@ -61,7 +65,25 @@ test('get() retrieves dependencies from last version', async () => {
     const provider = new NpmDataProvider(npmApi);
     const pkg = await provider.get('pkg');
 
-    expect(pkg.dependencies).toEqual(Object.keys(infoData.versions.v2.dependencies));
+    expect(pkg.dependencies).toEqual(_.keys(infoData.versions.v2.dependencies));
+});
+
+test('get() retrieves version from last version', async () => {
+    const infoData = {
+        versions: {
+            '0.0.1': { version: '0.0.1' },
+            '0.0.2': { version: '0.0.2' }
+        }
+    }
+
+    const npmApi = {
+        info: jest.fn(() => Promise.resolve(infoData)),
+        downloads: jest.fn(() => Promise.resolve({}))
+    };
+    const provider = new NpmDataProvider(npmApi);
+    const pkg = await provider.get('pkg');
+
+    expect(pkg.version).toEqual(infoData.versions['0.0.2'].version);
 });
 
 test('get() retrieves contributors from author and maintainers in all versions', async () => {
@@ -90,10 +112,7 @@ test('get() retrieves contributors from author and maintainers in all versions',
         { name: 'Gilles' },
         { name: '001main', email: '001mainmail' },
         { name: '002main2', email: '002main2mail' },
-        { name: 'John' },
-        { name: 'infoAuthor' },
-        { name: 'infoMain1' },
-        { name: 'infoMain2', email: 'infoMain2email' }
+        { name: 'John' }
     ]);
 });
 
@@ -109,6 +128,17 @@ test('get() uses api.info() name', async () => {
     const pkg = await provider.get('pkg');
 
     expect(pkg.name).toEqual(infoData.name);
+});
+
+test('get() uses null for description if not present', async () => {
+    const npmApi = {
+        info: jest.fn(() => Promise.resolve({})),
+        downloads: jest.fn(() => Promise.resolve({}))
+    };
+    const provider = new NpmDataProvider(npmApi);
+    const pkg = await provider.get('pkg');
+
+    expect(pkg.description).toBeNull();
 });
 
 test('get() uses api.info() description', async () => {
@@ -128,7 +158,7 @@ test('get() uses api.info() description', async () => {
 test('get() retrieves dependencies as [] if not present', async () => {
     const infoData = {
         versions: {
-            'v1': { maintainers: [{ name: 'v1Main1' }, 'v1Main2 <v1Main2email>'] }
+            v1: { maintainers: [{ name: 'v1Main1' }, 'v1Main2 <v1Main2email>'] }
         }
     }
     const npmApi = {
@@ -154,7 +184,11 @@ test('get() retrieves contributors as [] if no author or maintainer', async () =
 
 test('get() retrieves contributors as [author] if no maintainer', async () => {
     const infoData = {
-        author: 'Greg <greg@greg.com>'
+        author: 'Fake John<fake.john@domain.ext>',
+        maintainers: ['Greg <greg@greg.com>'],
+        versions: {
+            v1: { author: 'John' }
+        }
     }
 
     const npmApi = {
@@ -164,12 +198,16 @@ test('get() retrieves contributors as [author] if no maintainer', async () => {
     const provider = new NpmDataProvider(npmApi);
     const pkg = await provider.get('pkg');
 
-    expect(pkg.contributors).toEqual([{ name: 'Greg', email: 'greg@greg.com' }]);
+    expect(pkg.contributors).toEqual([{ name: 'John' }]);
 });
 
 test('get() retrieves contributors as maintainers if no author', async () => {
     const infoData = {
-        maintainers: ['Greg <greg@greg.com>']
+        author: 'Fake John<fake.john@domain.ext>',
+        maintainers: ['Greg <greg@greg.com>'],
+        versions: {
+            v1: { maintainers: [{ name: 'v1Main1' }, 'v1Main2 <v1Main2email>'] }
+        }
     }
     const npmApi = {
         info: jest.fn(() => Promise.resolve(infoData)),
@@ -178,13 +216,18 @@ test('get() retrieves contributors as maintainers if no author', async () => {
     const provider = new NpmDataProvider(npmApi);
     const pkg = await provider.get('pkg');
 
-    expect(pkg.contributors).toEqual([{ name: 'Greg', email: 'greg@greg.com' }]);
+    expect(pkg.contributors).toEqual([{ name: 'v1Main1' }, { name: 'v1Main2', email: 'v1Main2email' }]);
 });
 
 test('get() dedupes contributors in maintainers and author', async () => {
     const infoData = {
-        author: { name: 'Greg', email: 'greg@greg.com' },
-        maintainers: ['Greg <greg@greg.com>', { name: 'Fake John' }]
+        author: 'Fake John<fake.john@domain.ext>',
+        versions: {
+            v1: {
+                author: { name: 'Greg', email: 'greg@greg.com' },
+                maintainers: ['Greg <greg@greg.com>', { name: 'Fake John' }]
+            }
+        }
     }
 
     const npmApi = {
@@ -198,6 +241,17 @@ test('get() dedupes contributors in maintainers and author', async () => {
         { name: 'Greg', email: 'greg@greg.com' },
         { name: 'Fake John' }
     ]);
+});
+
+test('get() retrieves repository as null when not present', async () => {
+    const npmApi = {
+        info: jest.fn(() => Promise.resolve({})),
+        downloads: jest.fn(() => Promise.resolve({}))
+    };
+    const provider = new NpmDataProvider(npmApi);
+    const pkg = await provider.get('pkg');
+
+    expect(pkg.repository).toBeNull();
 });
 
 test('get() retrieves repository when string', async () => {

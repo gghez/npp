@@ -49,8 +49,6 @@ export function mergedContributors(_contributors) {
     const merged = [];
 
     while (contributors.length) {
-        // console.log('contributors', JSON.stringify(contributors));
-        // console.log('merged', JSON.stringify(merged));
         const current = _.first(contributors);
         const similarContributors = _.remove(contributors, c => contributorEquals(c, current));
 
@@ -72,4 +70,13 @@ export function mergedContributors(_contributors) {
     }
 
     return merged;
+}
+
+export function extractContributors(pkg) {
+    const contribs = _(pkg.author)
+        .concat(pkg.maintainers || [])
+        .compact()
+        .value();
+
+    return mergedContributors(contribs);
 }

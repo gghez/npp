@@ -1,6 +1,6 @@
 import { NpmApi } from "./NpmApi";
 import _ from "lodash";
-import { mergedContributors } from "../helper/contributorHelper";
+import { mergedContributors, extractContributors } from "../helper/contributorHelper";
 
 export class NpmDataProvider {
     constructor(npmApi) {
@@ -8,46 +8,33 @@ export class NpmDataProvider {
     }
 
     /**
-     * Extracts a contributor collection from npm package root
-     * as well as all versioned packages.
+     * Retrieves all versioned package of given name.
+     * @param packageName NPM package name.
      */
-    extractContributors(info) {
-        let contributors = _(info.versions)
-            .keys()
-            .sortBy() // ensure versions are sorted
-            .map(v => {
-                return [info.versions[v].author]
-                    .concat(info.versions[v].maintainers || []);
-            })
-            .flatten()
-            .concat(info.author, info.maintainers || [])
-            .value();
-
-        // console.log('contributors before merge', JSON.stringify(contributors));
-
-        contributors = mergedContributors(contributors);
-        // console.log('contributors after merge', JSON.stringify(contributors));
-
-        return contributors;
-    }
-
     async get(packageName) {
         const [info, downloads] = await Promise.all([
             this.npmApi.info(packageName),
             this.npmApi.downloads(packageName, NpmApi.TIME_POINT_LAST_MONTH)
         ]);
 
-        const lastVersion = _.last(_.keys(info.versions || {}));
+        const lastVersion = _(info.versions).keys().last();
         const deps = (info.versions && info.versions[lastVersion].dependencies && _.keys(info.versions[lastVersion].dependencies)) || [];
-        const contributors = this.extractContributors(info);
+        let contributors = _(info.versions)
+            .keys()
+            .sortBy() // ensure sorted versions to override contributor info with latest
+            .map(v => extractContributors(info.versions[v]))
+            .flatten()
+            .value();
+        contributors = mergedContributors(contributors);
 
         return {
             name: info.name,
-            description: info.description,
+            description: info.description || null,
+            version: lastVersion,
             created: info.time && info.time.created,
             modified: info.time && info.time.modified,
             contributors,
-            repository: typeof info.repository == 'string' ? info.repository : (info.repository && info.repository.url),
+            repository: typeof info.repository == 'string' ? info.repository : (info.repository && info.repository.url) || null,
             dependencies: deps,
             downloads: (downloads && downloads.downloads) || 0
         };

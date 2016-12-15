@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { daysSince } from "../helper/dateHelper";
+import { daysBetween } from "../helper/dateHelper";
 
 export class NpmScoreCalculator {
     static DOWNLOADS_WEIGHT = 4;
@@ -20,19 +20,20 @@ export class NpmScoreCalculator {
      * Scores a package among similar other packages.
      * @param pkg Package to score
      * @param otherSimilarPackages A collection of similar package
+     * @param scoreAt Time point at which scoring should occur.
      */
-    score(pkg, otherSimilarPackages) { // todo: use date for scoring at date instead of now
+    score(pkg, otherSimilarPackages, scoreAt = _.now()) { // todo: use date for scoring at date instead of now
         const pkgData = this.getScoreData(pkg);
         const allData = otherSimilarPackages.concat([pkg]).map(this.getScoreData);
 
         const maxDownloads = _.max(allData.map(d => d.downloads));
         const maxPeople = _.max(allData.map(d => d.people));
 
-        const activityMinDelta = _.min(allData.map(d => daysSince(new Date(d.lastActivity))));
-        const pkgActivityDelta = daysSince(new Date(pkgData.lastActivity));
+        const activityMinDelta = _.min(allData.map(d => daysBetween(scoreAt, new Date(d.lastActivity))));
+        const pkgActivityDelta = daysBetween(scoreAt, new Date(pkgData.lastActivity));
 
-        const birthMinDelta = _.min(allData.map(d => daysSince(new Date(d.birthDate))));
-        const pkgBirthDelta = daysSince(new Date(pkgData.birthDate));
+        const birthMinDelta = _.min(allData.map(d => daysBetween(scoreAt, new Date(d.birthDate))));
+        const pkgBirthDelta = daysBetween(scoreAt, new Date(pkgData.birthDate));
 
         const realScore = NpmScoreCalculator.DOWNLOADS_WEIGHT * (pkgData.downloads / maxDownloads) +
             NpmScoreCalculator.PEOPLE_WEIGHT * (pkgData.people / maxPeople) +
