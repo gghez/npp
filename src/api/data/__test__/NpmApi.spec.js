@@ -1,6 +1,6 @@
 jest.mock('request');
 
-import { NpmApi } from "../../../src/api/data/NpmApi";
+import { NpmApi } from "../NpmApi";
 import request from "request";
 
 beforeEach(() => {

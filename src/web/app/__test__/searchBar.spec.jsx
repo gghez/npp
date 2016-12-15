@@ -1,7 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import { SearchBar } from "../../src/web/app/searchBar.jsx";
+import { SearchBar } from "../searchBar.jsx";
 
 test('SearchBar render input[type=search]', () => {
     const component = renderer.create(<SearchBar search="pkg" />);

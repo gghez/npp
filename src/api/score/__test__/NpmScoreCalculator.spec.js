@@ -1,4 +1,4 @@
-import { NpmScoreCalculator } from "../../../src/api/score/NpmScoreCalculator";
+import { NpmScoreCalculator } from "../NpmScoreCalculator";
 
 const testPkg = {
     created: '2015-12-09T20:13:55.558Z',
@@ -19,7 +19,7 @@ test('getScoreData() returns correct values', () => {
     });
 });
 
-test('price() returns 10 when no similar packages', () => {
+test('score() returns 10 when no similar packages', () => {
     const testSimilarPackages = [];
     const calc = new NpmScoreCalculator();
     const score = calc.score(testPkg, testSimilarPackages);
@@ -27,7 +27,7 @@ test('price() returns 10 when no similar packages', () => {
     expect(score).toEqual(10);
 });
 
-test('price() returns 10 when identical packages', () => {
+test('score() returns 10 when identical packages', () => {
     const testSimilarPackages = [testPkg, testPkg];
     const calc = new NpmScoreCalculator();
     const score = calc.score(testPkg, testSimilarPackages);

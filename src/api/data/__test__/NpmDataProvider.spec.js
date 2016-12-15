@@ -1,4 +1,4 @@
-import { NpmDataProvider } from "../../../src/api/data/NpmDataProvider";
+import { NpmDataProvider } from "../NpmDataProvider";
 
 test('get() combines npm api data correctly', async () => {
     const npmApi = {
@@ -68,14 +68,14 @@ test('get() retrieves contributors from author and maintainers in all versions',
     const infoData = {
         author: 'infoAuthor',
         maintainers: [{ name: 'infoMain1' }, 'infoMain2 <infoMain2email>'],
-        versions:{
-            '0.0.1':{
-                author:{name:'Gilles'},
-                maintainers:[{ name: '001main' }, '001main2 <002main2mail>']
+        versions: {
+            '0.0.1': {
+                author: { name: 'Gilles' },
+                maintainers: [{ name: '001main' }, '001main2 <002main2mail>']
             },
-            '0.0.2':{
-                author:{name:'John'},
-                maintainers:[{ name: '001main',email:'001mainmail' }, '002main2 <002main2mail>']
+            '0.0.2': {
+                author: { name: 'John' },
+                maintainers: [{ name: '001main', email: '001mainmail' }, '002main2 <002main2mail>']
             }
         }
     }
@@ -87,13 +87,13 @@ test('get() retrieves contributors from author and maintainers in all versions',
     const pkg = await provider.get('pkg');
 
     expect(pkg.contributors).toEqual([
-        { name: 'infoAuthor' },
-        { name: 'infoMain1' },
-        { name: 'infoMain2', email: 'infoMain2email' },
         { name: 'Gilles' },
         { name: '001main', email: '001mainmail' },
         { name: '002main2', email: '002main2mail' },
-        { name: 'John' }
+        { name: 'John' },
+        { name: 'infoAuthor' },
+        { name: 'infoMain1' },
+        { name: 'infoMain2', email: 'infoMain2email' }
     ]);
 });
 
@@ -194,7 +194,10 @@ test('get() dedupes contributors in maintainers and author', async () => {
     const provider = new NpmDataProvider(npmApi);
     const pkg = await provider.get('pkg');
 
-    expect(pkg.contributors).toEqual([{ name: 'Greg', email: 'greg@greg.com' }, { name: 'Fake John' }]);
+    expect(pkg.contributors).toEqual([
+        { name: 'Greg', email: 'greg@greg.com' },
+        { name: 'Fake John' }
+    ]);
 });
 
 test('get() retrieves repository when string', async () => {

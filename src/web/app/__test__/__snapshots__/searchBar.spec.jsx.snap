@@ -1,0 +1,8 @@
+exports[`test SearchBar render input[type=search] 1`] = `
+<form
+  onSubmit={[Function]}>
+  <input
+    defaultValue="pkg"
+    type="search" />
+</form>
+`;
