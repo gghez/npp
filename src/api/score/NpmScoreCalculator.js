@@ -21,7 +21,7 @@ export class NpmScoreCalculator {
      * @param pkg Package to score
      * @param otherSimilarPackages A collection of similar package
      */
-    score(pkg, otherSimilarPackages) {
+    score(pkg, otherSimilarPackages) { // todo: use date for scoring at date instead of now
         const pkgData = this.getScoreData(pkg);
         const allData = otherSimilarPackages.concat([pkg]).map(this.getScoreData);
 
@@ -39,6 +39,6 @@ export class NpmScoreCalculator {
             NpmScoreCalculator.ACTIVITY_WEIGHT * (activityMinDelta / pkgActivityDelta) +
             NpmScoreCalculator.BIRTH_WEIGHT * (birthMinDelta / pkgBirthDelta);
 
-        return Math.floor(realScore);
+        return _.round(realScore, 1);
     }
 }

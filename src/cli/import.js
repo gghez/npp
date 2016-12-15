@@ -19,21 +19,20 @@ export async function importPackage(packageName, options, depth = 0) {
         console.log(chalk.gray(JSON.stringify(pkg)));
     }
 
-    const depRelations = pkg.dependencies.map(dep => `MERGE (p)-[:DEPENDS_ON]->(:Package {name:"${dep}"})`).join('\n');
-    const maintainerRelations = pkg.maintainers.map((m, i) => `MERGE (m${i}:Person {name:"${m.name}"})-[:CONTRIBUTES_ON]->(p)`).join('\n');
-    const maintainerEmails = pkg.maintainers.map((m, i) => m.email ? `m${i}.email = "${m.email}",` : '').join('\n    ');
+    const dependencyRels = pkg.dependencies.map(dep => `MERGE (p)-[:DEPENDS_ON]->(:Package {name:"${dep}"})`).join('\n');
+    const contribRels = pkg.contributors.map((m, i) => `MERGE (m${i}:Person {name:"${m.name}"})-[:CONTRIBUTES_ON]->(p)`).join('\n');
+    const contribEmails = pkg.contributors.map((m, i) => m.email ? `m${i}.email = "${m.email}",` : '').join('\n    ');
 
     const cypherRequest = `
-MERGE (a:Person {name:{authorName}})-[:AUTHOR_OF]->(p:Package {name:{packageName}})
-${depRelations}
-${maintainerRelations}
-SET p.description = {description},
+MERGE (p:Package {name:{packageName}})
+${dependencyRels}
+${contribRels}
+SET ${contribEmails}
+    p.description = {description},
     p.created = {created},
     p.modified = {modified},
     p.repository = {repository},
     p.downloads = {downloads},
-    ${maintainerEmails}
-    a.email = {authorEmail}
 RETURN p`;
 
     if (options.verbose) {
@@ -45,8 +44,6 @@ RETURN p`;
     try {
         session = driver.session();
         result = await session.run(cypherRequest, {
-            authorName: pkg.author.name,
-            authorEmail: pkg.author.email || null,
             packageName,
             description: pkg.description,
             created: pkg.created,
