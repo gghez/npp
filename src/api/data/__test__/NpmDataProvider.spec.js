@@ -116,6 +116,17 @@ test('get() retrieves contributors from author and maintainers in all versions',
     ]);
 });
 
+test('get() returns null if api.info() name is falsy', async () => {
+    const npmApi = {
+        info: jest.fn(() => Promise.resolve({})),
+        downloads: jest.fn(() => Promise.resolve({}))
+    };
+    const provider = new NpmDataProvider(npmApi);
+    const pkg = await provider.get('pkg');
+
+    expect(pkg).toBeNull();
+});
+
 test('get() uses api.info() name', async () => {
     const infoData = {
         name: 'infoName'

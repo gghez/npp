@@ -17,6 +17,8 @@ export class NpmDataProvider {
             this.npmApi.downloads(packageName, NpmApi.TIME_POINT_LAST_MONTH)
         ]);
 
+        if (!info.name) return null;
+
         const lastVersion = _(info.versions).keys().last();
         const deps = (info.versions && info.versions[lastVersion].dependencies && _.keys(info.versions[lastVersion].dependencies)) || [];
         let contributors = _(info.versions)

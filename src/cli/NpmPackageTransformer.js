@@ -11,7 +11,12 @@ export class NpmPackageTransformer {
     }
 
     async importPackage(packageName, _options, depth = 0) {
+        if (_(this.processedPackages).includes(packageName)) {
+            return;
+        }
+
         const options = _(_options).defaults({ verbose: false, recursive: false, silent: false }).value();
+
         const pkg = await this.npmDataProvider.get(packageName);
 
         if (!options.silent) {
@@ -68,20 +73,15 @@ RETURN p`;
             }
         }
 
-        let insertedPackages = [neoPackageData];
+        this.processedPackages.push(packageName);
+
         if (options.recursive) {
             // avoid concurrent neo4j access
             const depPackages = pkg.dependencies || [];
-            for (let i = 0; i < depPackages; i++) {
-                let d = depPackages[i];
-                const idepPackages = await this.importPackage(d, options, depth + 1);
-                insertedPackages = insertedPackages.concat(idepPackages);
+            for (let i = 0; i < depPackages.length; i++) {
+                await this.importPackage(depPackages[i], options, depth + 1);
             }
         }
-
-        this.processedPackages = this.processedPackages.concat(insertedPackages.map(p => p.name));
-
-        return insertedPackages;
     }
 
 }
