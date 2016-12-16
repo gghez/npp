@@ -1,4 +1,5 @@
 import { NpmPackageTransformer } from "../NpmPackageTransformer";
+import { NpmDataProvider } from "../../api/data/NpmDataProvider";
 import _ from "lodash";
 
 const fakeProvider = {
@@ -17,8 +18,25 @@ const fakeDriver = {
 
 beforeEach(() => {
     fakeProvider.get.mockClear();
+    fakeProvider.get.mockImplementation(() => ({}));
     fakeDriver.session.mockClear();
     fakeSession.run.mockClear();
+});
+
+test('importPackage() processes import operations once.', async () => {
+    const npmApi = {
+        info: jest.fn(() => Promise.resolve({ name: 'infoName' })),
+        downloads: jest.fn(() => Promise.resolve({}))
+    };
+    const provider = new NpmDataProvider(npmApi);
+    const transformer = new NpmPackageTransformer(provider, fakeDriver);
+
+    await transformer.importPackage('pkg', { silent: true });
+    await transformer.importPackage('pkg', { silent: true });
+
+    expect(npmApi.info).toHaveBeenCalledTimes(1);
+    expect(npmApi.downloads).toHaveBeenCalledTimes(1);
+    expect(fakeSession.run).toHaveBeenCalledTimes(1);
 });
 
 test('importPackage() relies on data provider.', async () => {
@@ -167,4 +185,3 @@ RETURN p`
     });
 
 });
-

@@ -1,5 +1,9 @@
 import _ from "lodash";
 
+/**
+ * Builds a structured object representing a contributor.
+ * @param {String|Object} value contributor representation.
+ */
 export function normalizeContributor(value) {
     if (!value) {
         return value;
@@ -11,9 +15,9 @@ export function normalizeContributor(value) {
         const m = /([^<(]+)?(<(.+?)>)?\s*(\((.+?)\))?/.exec(value);
         if (m) {
             return {
-                name: m[1] && m[1].trim(),
-                email: m[3] && m[3].trim(),
-                url: m[5] && m[5].trim()
+                name: m[1] && m[1].trim() || undefined,
+                email: m[3] && m[3].trim() || undefined,
+                url: m[5] && m[5].trim() || undefined
             };
         } else {
             return {

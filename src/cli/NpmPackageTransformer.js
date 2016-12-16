@@ -11,13 +11,15 @@ export class NpmPackageTransformer {
     }
 
     async importPackage(packageName, _options, depth = 0) {
-        if (_(this.processedPackages).includes(packageName)) {
-            return;
-        }
+        if (_(this.processedPackages).includes(packageName)) return;
+
+        // save imported package to avoid re-run on same
+        this.processedPackages.push(packageName);
 
         const options = _(_options).defaults({ verbose: false, recursive: false, silent: false }).value();
 
         const pkg = await this.npmDataProvider.get(packageName);
+        if (!pkg) return;
 
         if (!options.silent) {
             console.log(`[${depth}] ${packageName} <-- ${chalk.blue('NPM')}`);
@@ -64,16 +66,12 @@ RETURN p`;
             session.close();
         }
 
-        const neoPackageData = result.records[0]._fields[0].properties;
-
         if (!options.silent) {
             console.log(`[${depth}] ${packageName} --> ${chalk.blue('Neo4j')}`);
             if (options.verbose) {
-                console.log(chalk.gray(JSON.stringify(neoPackageData)));
+                console.log(chalk.gray(JSON.stringify(result.records[0]._fields[0].properties)));
             }
         }
-
-        this.processedPackages.push(packageName);
 
         if (options.recursive) {
             // avoid concurrent neo4j access

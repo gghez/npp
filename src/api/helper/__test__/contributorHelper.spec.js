@@ -7,18 +7,75 @@ import {
 
 [
     { input: 'Barney Rubble <b@rubble.com> (http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
-    { input: ' Barney Rubble <b@rubble.com>(http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: '  Barney Rubble <b@rubble.com> (http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble  <b@rubble.com> (http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble<b@rubble.com> (http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
     { input: 'Barney Rubble<b@rubble.com>(http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble <b@rubble.com> (  http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble <b@rubble.com> (http://barnyrubble.tumblr.com/  )', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble <b@rubble.com> (http://barnyrubble.tumblr.com/)  ', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble <b@rubble.com>   (http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble <b@rubble.com> (  http://barnyrubble.tumblr.com/ )', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble <b@rubble.com > (http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble < b@rubble.com> (http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble <  b@rubble.com > (http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble <b@rubble.com> (http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+
+    { input: 'Barney Rubble <b@rubble.com>', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: undefined } },
+    { input: '  Barney Rubble <b@rubble.com>', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: undefined } },
+    { input: 'Barney Rubble <b@rubble.com>  ', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: undefined } },
+    { input: 'Barney Rubble   <b@rubble.com>', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: undefined } },
+    { input: '  Barney Rubble <b@rubble.com> ', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: undefined } },
     { input: 'Barney Rubble < b@rubble.com>', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: undefined } },
+    { input: 'Barney Rubble <b@rubble.com >', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: undefined } },
+    { input: 'Barney Rubble < b@rubble.com  >', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: undefined } },
     { input: 'Barney Rubble<b@rubble.com>', expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: undefined } },
+
     { input: 'Barney Rubble', expected: { name: 'Barney Rubble', email: undefined, url: undefined } },
+    { input: ' Barney Rubble', expected: { name: 'Barney Rubble', email: undefined, url: undefined } },
+    { input: 'Barney Rubble ', expected: { name: 'Barney Rubble', email: undefined, url: undefined } },
+    { input: ' Barney Rubble  ', expected: { name: 'Barney Rubble', email: undefined, url: undefined } },
+
     { input: 'Barney Rubble (http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
-    { input: ' Barney Rubble(http://barnyrubble.tumblr.com/ )', expected: { name: 'Barney Rubble', email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+    { input: '  Barney Rubble (http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+    { input: '  Barney Rubble(http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble (http://barnyrubble.tumblr.com/) ', expected: { name: 'Barney Rubble', email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble (http://barnyrubble.tumblr.com/ )', expected: { name: 'Barney Rubble', email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble (  http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble ( http://barnyrubble.tumblr.com/  )', expected: { name: 'Barney Rubble', email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble(http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble( http://barnyrubble.tumblr.com/)', expected: { name: 'Barney Rubble', email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble(http://barnyrubble.tumblr.com/  ) ', expected: { name: 'Barney Rubble', email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+    { input: 'Barney Rubble( http://barnyrubble.tumblr.com/ )', expected: { name: 'Barney Rubble', email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+
     { input: '<b@rubble.com>(http://barnyrubble.tumblr.com/)', expected: { name: undefined, email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
     { input: '<b@rubble.com> (http://barnyrubble.tumblr.com/)', expected: { name: undefined, email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: ' <b@rubble.com>  ( http://barnyrubble.tumblr.com/ )', expected: { name: undefined, email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: ' < b@rubble.com>(http://barnyrubble.tumblr.com/  ) ', expected: { name: undefined, email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: '<b@rubble.com   >(http://barnyrubble.tumblr.com/)', expected: { name: undefined, email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: ' <  b@rubble.com >( http://barnyrubble.tumblr.com/)', expected: { name: undefined, email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+
     { input: '(http://barnyrubble.tumblr.com/)', expected: { name: undefined, email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+    { input: '(http://barnyrubble.tumblr.com/)  ', expected: { name: undefined, email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+    { input: ' (http://barnyrubble.tumblr.com/)', expected: { name: undefined, email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+    { input: '  (http://barnyrubble.tumblr.com/ )', expected: { name: undefined, email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+    { input: '( http://barnyrubble.tumblr.com/) ', expected: { name: undefined, email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+    { input: ' ( http://barnyrubble.tumblr.com/ )', expected: { name: undefined, email: undefined, url: 'http://barnyrubble.tumblr.com/' } },
+
     { input: '<b@rubble.com>', expected: { name: undefined, email: 'b@rubble.com', url: undefined } },
-    { input: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' }, expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } }
+    { input: ' <b@rubble.com>', expected: { name: undefined, email: 'b@rubble.com', url: undefined } },
+    { input: '< b@rubble.com>', expected: { name: undefined, email: 'b@rubble.com', url: undefined } },
+    { input: '<b@rubble.com >', expected: { name: undefined, email: 'b@rubble.com', url: undefined } },
+    { input: '< b@rubble.com  >', expected: { name: undefined, email: 'b@rubble.com', url: undefined } },
+    { input: ' < b@rubble.com >  ', expected: { name: undefined, email: 'b@rubble.com', url: undefined } },
+
+    { input: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' }, expected: { name: 'Barney Rubble', email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: { email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' }, expected: { email: 'b@rubble.com', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: { name: 'Barney Rubble', url: 'http://barnyrubble.tumblr.com/' }, expected: { name: 'Barney Rubble', url: 'http://barnyrubble.tumblr.com/' } },
+    { input: { name: 'Barney Rubble', email: 'b@rubble.com' }, expected: { name: 'Barney Rubble', email: 'b@rubble.com' } },
+    { input: { url: 'http://barnyrubble.tumblr.com/' }, expected: { url: 'http://barnyrubble.tumblr.com/' } },
+    { input: { name: 'Barney Rubble', }, expected: { name: 'Barney Rubble' } },
+    { input: { email: 'b@rubble.com' }, expected: { email: 'b@rubble.com' } }
 ].forEach(testParams => {
 
     test(`normalizeContributor() works on string "${testParams.input}"`, () => {
@@ -31,16 +88,17 @@ import {
 [
     { c1: null, c2: null },
     { c1: undefined, c2: undefined },
+    { c1: '', c2: '' },
+    { c1: {}, c2: {} },
     { c1: null, c2: undefined },
     { c1: null, c2: '' },
+    { c1: null, c2: {} },
     { c1: undefined, c2: '' },
     { c1: undefined, c2: {} },
-    { c1: null, c2: {} },
-    { c1: {}, c2: {} },
     { c1: '', c2: {} }
 ].forEach(testParams => {
 
-    test('contributorEquals() is TRUE on edge case c1:' + testParams.c1 + ' c2:' + testParams.c2, () => {
+    test(`contributorEquals() is TRUE between ${testParams.c1} and ${testParams.c2}`, () => {
         expect(contributorEquals(testParams.c1, testParams.c2)).toBeTruthy();
         expect(contributorEquals(testParams.c2, testParams.c1)).toBeTruthy();
     });
@@ -58,7 +116,7 @@ import {
     { c1: '<greg@greg.com>', c2: { email: 'greg@greg.com' } }
 ].forEach(testParams => {
 
-    test(`contributorEquals() is TRUE on c1:${JSON.stringify(testParams.c2)} c2:${JSON.stringify(testParams.c2)}`, () => {
+    test(`contributorEquals() is TRUE between ${JSON.stringify(testParams.c2)} and ${JSON.stringify(testParams.c2)}`, () => {
         expect(contributorEquals(testParams.c1, testParams.c2)).toBeTruthy();
         expect(contributorEquals(testParams.c2, testParams.c1)).toBeTruthy();
     });
@@ -75,7 +133,7 @@ import {
     { c1: 'Greg', c2: { email: 'user@domain.ext' } }
 ].forEach(testParams => {
 
-    test(`contributorEquals() is FALSE on c1:${JSON.stringify(testParams.c2)} c2:${JSON.stringify(testParams.c2)}`, () => {
+    test(`contributorEquals() is FALSE between ${JSON.stringify(testParams.c2)} and ${JSON.stringify(testParams.c2)}`, () => {
         expect(contributorEquals(testParams.c1, testParams.c2)).toBeFalsy();
         expect(contributorEquals(testParams.c2, testParams.c1)).toBeFalsy();
     });

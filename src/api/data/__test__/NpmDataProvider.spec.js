@@ -3,7 +3,7 @@ import _ from "lodash";
 
 test('get() combines npm api data correctly', async () => {
     const npmApi = {
-        info: jest.fn(() => Promise.resolve({})),
+        info: jest.fn(() => Promise.resolve({ name: 'infoName' })),
         downloads: jest.fn(() => Promise.resolve({}))
     };
     const provider = new NpmDataProvider(npmApi)
@@ -15,6 +15,7 @@ test('get() combines npm api data correctly', async () => {
 
 test('get() uses api.info() created', async () => {
     const infoData = {
+        name: 'infoName',
         time: {
             created: 'infoTimeCreated'
         }
@@ -32,6 +33,7 @@ test('get() uses api.info() created', async () => {
 
 test('get() uses api.info() modified', async () => {
     const infoData = {
+        name: 'infoName',
         time: {
             modified: 'infoTimeCreated'
         }
@@ -49,6 +51,7 @@ test('get() uses api.info() modified', async () => {
 
 test('get() retrieves dependencies from last version', async () => {
     const infoData = {
+        name: 'infoName',
         versions: {
             'v1': { maintainers: [{ name: 'v1Main1' }, 'v1Main2 <v1Main2email>'] },
             'v2': {
@@ -70,6 +73,7 @@ test('get() retrieves dependencies from last version', async () => {
 
 test('get() retrieves version from last version', async () => {
     const infoData = {
+        name: 'infoName',
         versions: {
             '0.0.1': { version: '0.0.1' },
             '0.0.2': { version: '0.0.2' }
@@ -88,6 +92,7 @@ test('get() retrieves version from last version', async () => {
 
 test('get() retrieves contributors from author and maintainers in all versions', async () => {
     const infoData = {
+        name: 'infoName',
         author: 'infoAuthor',
         maintainers: [{ name: 'infoMain1' }, 'infoMain2 <infoMain2email>'],
         versions: {
@@ -143,7 +148,7 @@ test('get() uses api.info() name', async () => {
 
 test('get() uses null for description if not present', async () => {
     const npmApi = {
-        info: jest.fn(() => Promise.resolve({})),
+        info: jest.fn(() => Promise.resolve({ name: 'infoName' })),
         downloads: jest.fn(() => Promise.resolve({}))
     };
     const provider = new NpmDataProvider(npmApi);
@@ -154,7 +159,8 @@ test('get() uses null for description if not present', async () => {
 
 test('get() uses api.info() description', async () => {
     const infoData = {
-        description: 'infoDesc'
+        description: 'infoDesc',
+        name: 'infoName'
     }
     const npmApi = {
         info: jest.fn(() => Promise.resolve(infoData)),
@@ -168,6 +174,7 @@ test('get() uses api.info() description', async () => {
 
 test('get() retrieves dependencies as [] if not present', async () => {
     const infoData = {
+        name: 'infoName',
         versions: {
             v1: { maintainers: [{ name: 'v1Main1' }, 'v1Main2 <v1Main2email>'] }
         }
@@ -184,7 +191,7 @@ test('get() retrieves dependencies as [] if not present', async () => {
 
 test('get() retrieves contributors as [] if no author or maintainer', async () => {
     const npmApi = {
-        info: jest.fn(() => Promise.resolve({})),
+        info: jest.fn(() => Promise.resolve({ name: 'infoName' })),
         downloads: jest.fn(() => Promise.resolve({}))
     };
     const provider = new NpmDataProvider(npmApi);
@@ -195,6 +202,7 @@ test('get() retrieves contributors as [] if no author or maintainer', async () =
 
 test('get() retrieves contributors as [author] if no maintainer', async () => {
     const infoData = {
+        name: 'infoName',
         author: 'Fake John<fake.john@domain.ext>',
         maintainers: ['Greg <greg@greg.com>'],
         versions: {
@@ -214,6 +222,7 @@ test('get() retrieves contributors as [author] if no maintainer', async () => {
 
 test('get() retrieves contributors as maintainers if no author', async () => {
     const infoData = {
+        name: 'infoName',
         author: 'Fake John<fake.john@domain.ext>',
         maintainers: ['Greg <greg@greg.com>'],
         versions: {
@@ -232,6 +241,7 @@ test('get() retrieves contributors as maintainers if no author', async () => {
 
 test('get() dedupes contributors in maintainers and author', async () => {
     const infoData = {
+        name: 'infoName',
         author: 'Fake John<fake.john@domain.ext>',
         versions: {
             v1: {
@@ -256,7 +266,7 @@ test('get() dedupes contributors in maintainers and author', async () => {
 
 test('get() retrieves repository as null when not present', async () => {
     const npmApi = {
-        info: jest.fn(() => Promise.resolve({})),
+        info: jest.fn(() => Promise.resolve({ name: 'infoName' })),
         downloads: jest.fn(() => Promise.resolve({}))
     };
     const provider = new NpmDataProvider(npmApi);
@@ -267,6 +277,7 @@ test('get() retrieves repository as null when not present', async () => {
 
 test('get() retrieves repository when string', async () => {
     const infoData = {
+        name: 'infoName',
         repository: 'infoRepoUrl'
     }
     const npmApi = {
@@ -281,6 +292,7 @@ test('get() retrieves repository when string', async () => {
 
 test('get() retrieves repository when object', async () => {
     const infoData = {
+        name: 'infoName',
         repository: { url: 'infoRepoUrl' }
     }
     const npmApi = {
@@ -296,7 +308,7 @@ test('get() retrieves repository when object', async () => {
 test('get() retrieves downloads', async () => {
     const downloadsData = { downloads: 7002 };
     const npmApi = {
-        info: jest.fn(() => Promise.resolve({})),
+        info: jest.fn(() => Promise.resolve({ name: 'infoName' })),
         downloads: jest.fn(() => Promise.resolve(downloadsData))
     };
     const provider = new NpmDataProvider(npmApi);
@@ -308,7 +320,7 @@ test('get() retrieves downloads', async () => {
 
 test('get() retrieves downloads as 0 when not present', async () => {
     const npmApi = {
-        info: jest.fn(() => Promise.resolve({})),
+        info: jest.fn(() => Promise.resolve({ name: 'infoName' })),
         downloads: jest.fn(() => Promise.resolve({}))
     };
     const provider = new NpmDataProvider(npmApi);
