@@ -9,7 +9,7 @@
     "test-factory": "jest --no-cache --watch --notify",
     "build-debug": "babel src/api -d src/api/dist --source-maps",
     "build": "webpack -d && babel src/api -d src/api/dist && echo Build completed.",
-    "dev": "concurrently \"nodemon --ignore src/web --verbose --exec babel-node src/api/index.js --self-hosted\" \"webpack -d --watch\"",
+    "dev": "concurrently \"nodemon --watch src/api --verbose --exec babel-node src/api/index.js --self-hosted\" \"webpack -d --watch\"",
     "start": "node src/api/dist/index.js --self-hosted",
     "import": "babel-node src/cli/index.js"
   },

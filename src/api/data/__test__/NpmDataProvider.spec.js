@@ -146,6 +146,42 @@ test('get() uses api.info() name', async () => {
     expect(pkg.name).toEqual(infoData.name);
 });
 
+test('get() uses api.info() keywords of last version', async () => {
+    const infoData = {
+        name: 'infoName',
+        versions: {
+            v1: { keywords: ['titi', 'tata'] },
+            v2: { keywords: ['toto'] }
+        }
+    }
+    const npmApi = {
+        info: jest.fn(() => Promise.resolve(infoData)),
+        downloads: jest.fn(() => Promise.resolve({}))
+    };
+    const provider = new NpmDataProvider(npmApi);
+    const pkg = await provider.get('pkg');
+
+    expect(pkg.keywords).toEqual(infoData.versions.v2.keywords);
+});
+
+test('get() uses [] as keywords when not present', async () => {
+    const infoData = {
+        name: 'infoName',
+        versions: {
+            v1: { keywords: ['titi', 'tata'] },
+            v2: {}
+        }
+    }
+    const npmApi = {
+        info: jest.fn(() => Promise.resolve(infoData)),
+        downloads: jest.fn(() => Promise.resolve({}))
+    };
+    const provider = new NpmDataProvider(npmApi);
+    const pkg = await provider.get('pkg');
+
+    expect(pkg.keywords).toEqual([]);
+});
+
 test('get() uses null for description if not present', async () => {
     const npmApi = {
         info: jest.fn(() => Promise.resolve({ name: 'infoName' })),

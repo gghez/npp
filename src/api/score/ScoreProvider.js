@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { daysBetween } from "../helper/dateHelper";
 
-export class NpmScoreCalculator {
+export class ScoreProvider {
     static DOWNLOADS_WEIGHT = 4;
     static PEOPLE_WEIGHT = 3;
     static ACTIVITY_WEIGHT = 2;
@@ -22,9 +22,13 @@ export class NpmScoreCalculator {
      * @param otherSimilarPackages A collection of similar package
      * @param scoreAt Time point at which scoring should occur.
      */
-    score(pkg, otherSimilarPackages, scoreAt = _.now()) { // todo: use date for scoring at date instead of now
+    score(pkg, otherSimilarPackages, scoreAt = _.now()) {
         const pkgData = this.getScoreData(pkg);
-        const allData = otherSimilarPackages.concat([pkg]).map(this.getScoreData);
+        const allData = _(pkg)
+            .concat(otherSimilarPackages)
+            .uniqBy('name')
+            .map(this.getScoreData)
+            .value();
 
         const maxDownloads = _.max(allData.map(d => d.downloads));
         const maxPeople = _.max(allData.map(d => d.people));
@@ -35,11 +39,18 @@ export class NpmScoreCalculator {
         const birthMinDelta = _.min(allData.map(d => daysBetween(scoreAt, new Date(d.birthDate))));
         const pkgBirthDelta = daysBetween(scoreAt, new Date(pkgData.birthDate));
 
-        const realScore = NpmScoreCalculator.DOWNLOADS_WEIGHT * (pkgData.downloads / maxDownloads) +
-            NpmScoreCalculator.PEOPLE_WEIGHT * (pkgData.people / maxPeople) +
-            NpmScoreCalculator.ACTIVITY_WEIGHT * (activityMinDelta / pkgActivityDelta) +
-            NpmScoreCalculator.BIRTH_WEIGHT * (birthMinDelta / pkgBirthDelta);
+        const realScore = ScoreProvider.DOWNLOADS_WEIGHT * (pkgData.downloads / maxDownloads) +
+            ScoreProvider.PEOPLE_WEIGHT * (pkgData.people / maxPeople) +
+            ScoreProvider.ACTIVITY_WEIGHT * (activityMinDelta / pkgActivityDelta) +
+            ScoreProvider.BIRTH_WEIGHT * (birthMinDelta / pkgBirthDelta);
 
         return _.round(realScore, 1);
+    }
+
+    scoreAll(packages, scoreAt = _.now()) {
+        return packages.map(p => {
+            p.score = this.score(p, packages, scoreAt);
+            return p;
+        });
     }
 }

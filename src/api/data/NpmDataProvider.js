@@ -20,7 +20,8 @@ export class NpmDataProvider {
         if (!info.name) return null;
 
         const lastVersion = _(info.versions).keys().last();
-        const deps = (info.versions && info.versions[lastVersion].dependencies && _.keys(info.versions[lastVersion].dependencies)) || [];
+        const lastVersionNode = info.versions && info.versions[lastVersion];
+        const dependencies = lastVersionNode && _.keys(lastVersionNode.dependencies);
         let contributors = _(info.versions)
             .keys()
             .sortBy() // ensure sorted versions to override contributor info with latest
@@ -28,6 +29,7 @@ export class NpmDataProvider {
             .flatten()
             .value();
         contributors = mergedContributors(contributors);
+        const keywords = (lastVersionNode && lastVersionNode.keywords) || [];
 
         return {
             name: info.name,
@@ -37,8 +39,9 @@ export class NpmDataProvider {
             modified: info.time && info.time.modified,
             contributors,
             repository: typeof info.repository == 'string' ? info.repository : (info.repository && info.repository.url) || null,
-            dependencies: deps,
-            downloads: (downloads && downloads.downloads) || 0
+            dependencies,
+            downloads: (downloads && downloads.downloads) || 0,
+            keywords
         };
     }
 }

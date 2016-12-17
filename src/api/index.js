@@ -24,7 +24,7 @@ if (isDev || selfHosted) {
 }
 
 app.use((err, req, res, next) => { // eslint-disable-line
-    logger(err && err.stack || err);
+    console.error(err && err.stack || err);
     res.status(500).send({ error: err.message });
 });
 

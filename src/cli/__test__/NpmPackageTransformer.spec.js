@@ -69,7 +69,8 @@ SET
     p.created = {created},
     p.modified = {modified},
     p.repository = {repository},
-    p.downloads = {downloads}
+    p.downloads = {downloads},
+    p.keywords = {keywords}
 RETURN p`
     },
     {
@@ -99,7 +100,8 @@ SET m0.email = "greg@greg.com",
     p.created = {created},
     p.modified = {modified},
     p.repository = {repository},
-    p.downloads = {downloads}
+    p.downloads = {downloads},
+    p.keywords = {keywords}
 RETURN p`
     },
     {
@@ -125,7 +127,8 @@ SET
     p.created = {created},
     p.modified = {modified},
     p.repository = {repository},
-    p.downloads = {downloads}
+    p.downloads = {downloads},
+    p.keywords = {keywords}
 RETURN p`
     },
     {
@@ -157,7 +160,42 @@ SET m0.email = "greg@greg.com",
     p.created = {created},
     p.modified = {modified},
     p.repository = {repository},
-    p.downloads = {downloads}
+    p.downloads = {downloads},
+    p.keywords = {keywords}
+RETURN p`
+    },
+    {
+        desc: 'with contributors, dependencies and keywords',
+        pkg: {
+            name: 'pacman',
+            description: 'A game',
+            version: '1.0.3',
+            created: 'createdAt',
+            modified: 'modifiedAt',
+            repository: 'gitrepoforinstance',
+            downloads: 7000,
+            dependencies: ['lodash', 'express'],
+            contributors: [
+                { name: 'Greg', email: 'greg@greg.com', url: 'http://greg.com/' },
+                { name: 'John', email: 'john@doe.com', url: 'http://john.com/' }
+            ],
+            keywords: ['titi', 'toto', 'tata']
+        },
+        expected: `
+MERGE (p:Package {name:{name}})
+MERGE (p)-[:DEPENDS_ON]->(:Package {name:"lodash"})
+MERGE (p)-[:DEPENDS_ON]->(:Package {name:"express"})
+MERGE (m0:Person {name:"Greg"})-[:CONTRIBUTES_ON]->(p)
+MERGE (m1:Person {name:"John"})-[:CONTRIBUTES_ON]->(p)
+SET m0.email = "greg@greg.com",
+    m1.email = "john@doe.com",
+    p.description = {description},
+    p.version = {version},
+    p.created = {created},
+    p.modified = {modified},
+    p.repository = {repository},
+    p.downloads = {downloads},
+    p.keywords = {keywords}
 RETURN p`
     }
 ].forEach(testParams => {
@@ -172,7 +210,7 @@ RETURN p`
 
         expect(fakeDriver.session).toHaveBeenCalled();
         expect(fakeSession.run.mock.calls[0][0]).toEqual(testParams.expected);
-        expect(fakeSession.run.mock.calls[0][1]).toEqual(_.pick(testParams.pkg, [
+        expect(fakeSession.run.mock.calls[0][1]).toEqual(_(testParams.pkg).pick([
             'name',
             'description',
             'version',
@@ -180,7 +218,7 @@ RETURN p`
             'modified',
             'repository',
             'downloads'
-        ]));
+        ]).assign({ keywords: (testParams.pkg.keywords || []).join(',') }));
         expect(fakeSession.close).toHaveBeenCalled();
     });
 

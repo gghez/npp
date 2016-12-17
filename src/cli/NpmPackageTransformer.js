@@ -42,7 +42,8 @@ SET ${contribEmails}
     p.created = {created},
     p.modified = {modified},
     p.repository = {repository},
-    p.downloads = {downloads}
+    p.downloads = {downloads},
+    p.keywords = {keywords}
 RETURN p`;
 
         if (!options.silent && options.verbose) {
@@ -53,15 +54,18 @@ RETURN p`;
         let result, session;
         try {
             session = this.neo4jDriver.session();
-            result = await session.run(cypherRequest, _.pick(pkg, [
-                'name',
-                'description',
-                'version',
-                'created',
-                'modified',
-                'repository',
-                'downloads'
-            ]));
+            const params = _(pkg)
+                .pick([
+                    'name',
+                    'description',
+                    'version',
+                    'created',
+                    'modified',
+                    'repository',
+                    'downloads'
+                ])
+                .assign({ keywords: (pkg.keywords || []).join(',') });
+            result = await session.run(cypherRequest, params);
         } finally {
             session.close();
         }
