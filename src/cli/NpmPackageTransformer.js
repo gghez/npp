@@ -62,9 +62,11 @@ RETURN p`;
                     'created',
                     'modified',
                     'repository',
-                    'downloads'
+                    'downloads',
+                    'keywords'
                 ])
-                .assign({ keywords: (pkg.keywords || []).join(',') });
+                .assign({ keywords: (pkg.keywords || []).join(',') })
+                .value();
             result = await session.run(cypherRequest, params);
         } finally {
             session.close();

@@ -218,7 +218,7 @@ RETURN p`
             'modified',
             'repository',
             'downloads'
-        ]).assign({ keywords: (testParams.pkg.keywords || []).join(',') }));
+        ]).assign({ keywords: (testParams.pkg.keywords || []).join(',') }).value());
         expect(fakeSession.close).toHaveBeenCalled();
     });
 
