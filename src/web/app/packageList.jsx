@@ -15,7 +15,7 @@ export class PackageList extends React.Component {
         }
     }
 
-    doSearch(search) {
+    doSearch() {
         $.ajax({
             url: `http://localhost:5001/api/search/${encodeURIComponent(this.props.params.search)}`,
             method: 'GET',
