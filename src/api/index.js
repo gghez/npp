@@ -16,7 +16,7 @@ let app = express();
 app.use(morgan(isDev ? 'dev' : 'combined'));
 app.use('/api/', api);
 
-if (isDev || selfHosted) {
+if (selfHosted) {
     app.use('/', express.static(path.resolve(__dirname, '../web/')));
     app.get('*', (req, res)=>{
         res.sendFile(path.resolve(__dirname, '../web/index.html'));

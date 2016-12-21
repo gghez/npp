@@ -8,6 +8,8 @@ const testPkg = {
     downloads: 7000
 };
 
+const refDate = new Date(2016, 12, 21);
+
 test('getScoreData() returns correct values', () => {
     const calc = new ScoreProvider();
     const pricingData = calc.getScoreData(testPkg);
@@ -23,7 +25,7 @@ test('getScoreData() returns correct values', () => {
 test('score() returns 10 when no similar packages', () => {
     const testSimilarPackages = [];
     const calc = new ScoreProvider();
-    const score = calc.score(testPkg, testSimilarPackages);
+    const score = calc.score(testPkg, testSimilarPackages, refDate);
 
     expect(score).toEqual(10);
 });
@@ -31,7 +33,7 @@ test('score() returns 10 when no similar packages', () => {
 test('score() returns 10 when identical packages', () => {
     const testSimilarPackages = [testPkg, testPkg];
     const calc = new ScoreProvider();
-    const score = calc.score(testPkg, testSimilarPackages);
+    const score = calc.score(testPkg, testSimilarPackages, refDate);
 
     expect(score).toEqual(10);
 });
@@ -51,7 +53,7 @@ test('score() takes contributors into account #1', () => {
     ];
 
     const calc = new ScoreProvider();
-    const score = calc.score(testPkg, testSimilarPackages);
+    const score = calc.score(testPkg, testSimilarPackages, refDate);
 
     expect(score).toEqual(9);
 });
@@ -67,7 +69,7 @@ test('score() takes contributors into account #2', () => {
     ];
 
     const calc = new ScoreProvider();
-    const score = calc.score(testPkg, testSimilarPackages);
+    const score = calc.score(testPkg, testSimilarPackages, refDate);
 
     expect(score).toEqual(10);
 });
@@ -83,9 +85,9 @@ test('score() takes last activity into account #1', () => {
     ];
 
     const calc = new ScoreProvider();
-    const score = calc.score(testPkg, testSimilarPackages);
+    const score = calc.score(testPkg, testSimilarPackages, refDate);
 
-    expect(score).toEqual(9.7);
+    expect(score).toEqual(10);
 });
 
 test('score() takes last activity into account #2', () => {
@@ -99,7 +101,7 @@ test('score() takes last activity into account #2', () => {
     ];
 
     const calc = new ScoreProvider();
-    const score = calc.score(testPkg, testSimilarPackages);
+    const score = calc.score(testPkg, testSimilarPackages, refDate);
 
     expect(score).toEqual(10);
 });
@@ -115,7 +117,7 @@ test('score() takes downloads into account #1', () => {
     ];
 
     const calc = new ScoreProvider();
-    const score = calc.score(testPkg, testSimilarPackages);
+    const score = calc.score(testPkg, testSimilarPackages, refDate);
 
     expect(score).toEqual(7.8);
 });
@@ -131,7 +133,7 @@ test('score() takes downloads into account #2', () => {
     ];
 
     const calc = new ScoreProvider();
-    const score = calc.score(testPkg, testSimilarPackages);
+    const score = calc.score(testPkg, testSimilarPackages, refDate);
 
     expect(score).toEqual(10);
 });
@@ -147,7 +149,7 @@ test('score() takes birth date into account #1', () => {
     ];
 
     const calc = new ScoreProvider();
-    const score = calc.score(testPkg, testSimilarPackages);
+    const score = calc.score(testPkg, testSimilarPackages, refDate);
 
     expect(score).toEqual(10);
 });
@@ -163,7 +165,7 @@ test('score() takes birth date into account #2', () => {
     ];
 
     const calc = new ScoreProvider();
-    const score = calc.score(testPkg, testSimilarPackages);
+    const score = calc.score(testPkg, testSimilarPackages, refDate);
 
-    expect(score).toEqual(9);
+    expect(score).toEqual(9.1);
 });

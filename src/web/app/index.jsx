@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "react-dom";
 import { Router, Route, browserHistory, IndexRedirect, IndexRoute } from "react-router";
 import { App } from "./app.jsx";
-import { Home } from "./home.jsx"; ƒ
+import { Home } from "./home.jsx";
 import { PackageList } from "./packageList.jsx"
 
 render(

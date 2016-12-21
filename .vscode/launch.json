@@ -22,7 +22,7 @@
                 "NODE_ENV": "development",
                 "NODE_DEBUG": "main"
             },
-            "preLaunchTask": "build-debug"
+            "preLaunchTask": "build-api"
         }
     ]
 }

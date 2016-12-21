@@ -12,13 +12,8 @@
             "args": ["install"]
         },
         {
-            "taskName": "build",
-            "args": ["run", "build"],
-            "isBuildCommand": true
-        },
-        {
-            "taskName": "build-debug",
-            "args": ["run", "build-debug"]
+            "taskName": "build-api",
+            "args": ["run", "build-api"]
         },
         {
             "taskName": "test",

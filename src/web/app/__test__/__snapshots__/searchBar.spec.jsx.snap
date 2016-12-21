@@ -2,6 +2,7 @@ exports[`test SearchBar render input[type=search] 1`] = `
 <form
   onSubmit={[Function]}>
   <input
+    className="form-control"
     defaultValue="pkg"
     type="search" />
 </form>

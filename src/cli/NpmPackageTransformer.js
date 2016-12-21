@@ -28,8 +28,8 @@ export class NpmPackageTransformer {
             }
         }
 
-        const dependencyRels = _(pkg.dependencies).map(dep => `MERGE (p)-[:DEPENDS_ON]->(:Package {name:"${dep}"})`).value().join('\n');
-        const contribRels = _(pkg.contributors).map((m, i) => `MERGE (m${i}:Person {name:"${m.name}"})-[:CONTRIBUTES_ON]->(p)`).value().join('\n');
+        const dependencyRels = _(pkg.dependencies).map((dep,i) => `MERGE (d${i}:Package {name:"${dep}"}) MERGE (p)-[:DEPENDS_ON]->(d${i})`).value().join('\n');
+        const contribRels = _(pkg.contributors).map((m, i) => `MERGE (m${i}:Person {name:"${m.name}"}) MERGE (m${i})-[:CONTRIBUTES_ON]->(p)`).value().join('\n');
         const contribEmails = _(pkg.contributors).map((m, i) => m.email ? `m${i}.email = "${m.email}",` : '').value().join('\n    ');
 
         const cypherRequest = `

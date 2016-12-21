@@ -1,21 +1,21 @@
-var webpack = require('webpack');
+// var webpack = require('webpack');
 var path = require('path');
 
-var BUILD_DIR = path.resolve(__dirname, 'src/web/dist');
+var DIST_DIR = path.resolve(__dirname, 'src/web/dist');
 var APP_DIR = path.resolve(__dirname, 'src/web/app');
 
 var config = {
-    entry: APP_DIR + '/index.jsx',
+    entry: path.resolve(APP_DIR, 'index.jsx'),
     output: {
-        path: BUILD_DIR,
+        path: DIST_DIR,
         filename: 'bundle.js'
     },
     module: {
         loaders: [
             {
-                test: /\.jsx?/,
+                test: /\.jsx?$/,
                 include: APP_DIR,
-                loader: 'babel'
+                loaders: ['babel']
             }
         ]
     },

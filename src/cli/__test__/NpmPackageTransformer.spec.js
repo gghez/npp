@@ -91,8 +91,8 @@ RETURN p`
         expected: `
 MERGE (p:Package {name:{name}})
 
-MERGE (m0:Person {name:"Greg"})-[:CONTRIBUTES_ON]->(p)
-MERGE (m1:Person {name:"John"})-[:CONTRIBUTES_ON]->(p)
+MERGE (m0:Person {name:"Greg"}) MERGE (m0)-[:CONTRIBUTES_ON]->(p)
+MERGE (m1:Person {name:"John"}) MERGE (m1)-[:CONTRIBUTES_ON]->(p)
 SET m0.email = "greg@greg.com",
     m1.email = "john@doe.com",
     p.description = {description},
@@ -118,8 +118,8 @@ RETURN p`
         },
         expected: `
 MERGE (p:Package {name:{name}})
-MERGE (p)-[:DEPENDS_ON]->(:Package {name:"lodash"})
-MERGE (p)-[:DEPENDS_ON]->(:Package {name:"express"})
+MERGE (d0:Package {name:"lodash"}) MERGE (p)-[:DEPENDS_ON]->(d0)
+MERGE (d1:Package {name:"express"}) MERGE (p)-[:DEPENDS_ON]->(d1)
 
 SET 
     p.description = {description},
@@ -149,10 +149,10 @@ RETURN p`
         },
         expected: `
 MERGE (p:Package {name:{name}})
-MERGE (p)-[:DEPENDS_ON]->(:Package {name:"lodash"})
-MERGE (p)-[:DEPENDS_ON]->(:Package {name:"express"})
-MERGE (m0:Person {name:"Greg"})-[:CONTRIBUTES_ON]->(p)
-MERGE (m1:Person {name:"John"})-[:CONTRIBUTES_ON]->(p)
+MERGE (d0:Package {name:"lodash"}) MERGE (p)-[:DEPENDS_ON]->(d0)
+MERGE (d1:Package {name:"express"}) MERGE (p)-[:DEPENDS_ON]->(d1)
+MERGE (m0:Person {name:"Greg"}) MERGE (m0)-[:CONTRIBUTES_ON]->(p)
+MERGE (m1:Person {name:"John"}) MERGE (m1)-[:CONTRIBUTES_ON]->(p)
 SET m0.email = "greg@greg.com",
     m1.email = "john@doe.com",
     p.description = {description},
@@ -183,10 +183,10 @@ RETURN p`
         },
         expected: `
 MERGE (p:Package {name:{name}})
-MERGE (p)-[:DEPENDS_ON]->(:Package {name:"lodash"})
-MERGE (p)-[:DEPENDS_ON]->(:Package {name:"express"})
-MERGE (m0:Person {name:"Greg"})-[:CONTRIBUTES_ON]->(p)
-MERGE (m1:Person {name:"John"})-[:CONTRIBUTES_ON]->(p)
+MERGE (d0:Package {name:"lodash"}) MERGE (p)-[:DEPENDS_ON]->(d0)
+MERGE (d1:Package {name:"express"}) MERGE (p)-[:DEPENDS_ON]->(d1)
+MERGE (m0:Person {name:"Greg"}) MERGE (m0)-[:CONTRIBUTES_ON]->(p)
+MERGE (m1:Person {name:"John"}) MERGE (m1)-[:CONTRIBUTES_ON]->(p)
 SET m0.email = "greg@greg.com",
     m1.email = "john@doe.com",
     p.description = {description},

@@ -1,5 +1,5 @@
 import React from "react";
-import {browserHistory} from "react-router";
+import { browserHistory } from "react-router";
 
 export class SearchBar extends React.Component {
     constructor(props) {
@@ -8,8 +8,8 @@ export class SearchBar extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    componentDidUpdate(prevProps){
-        if (prevProps.search != this.props.search && this.props.search){
+    componentDidUpdate(prevProps) {
+        if (prevProps.search != this.props.search && this.props.search) {
             this.input.value = this.props.search;
         }
     }
@@ -22,9 +22,10 @@ export class SearchBar extends React.Component {
     render() {
         return <form onSubmit={this.handleSubmit}>
             <input type="search"
-                    ref={(input) => this.input = input}
-                    defaultValue={this.props.search} />
-            </form>;
+                className="form-control"
+                ref={(input) => this.input = input}
+                defaultValue={this.props.search} />
+        </form>;
     }
 }
 

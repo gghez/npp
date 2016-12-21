@@ -4,13 +4,12 @@
   "description": "NPM Package Pricer",
   "main": "src/api/index.js",
   "scripts": {
-    "postinstall": "npm test && npm run build",
+    "postinstall": "npm test && webpack",
+    "start": "node src/api/dist/index.js --self-hosted",
     "test": "jest --no-cache",
     "test-factory": "jest --no-cache --watch --notify",
-    "build-debug": "babel src/api -d src/api/dist --source-maps",
-    "build": "webpack -d && babel src/api -d src/api/dist && echo Build completed.",
+    "build-api": "babel src/api -d src/api/dist --source-maps",
     "dev": "concurrently \"nodemon --watch src/api --verbose --exec babel-node src/api/index.js --self-hosted\" \"webpack -d --watch\"",
-    "start": "node src/api/dist/index.js --self-hosted",
     "import": "babel-node src/cli/index.js"
   },
   "repository": {
@@ -64,6 +63,7 @@
     "commander": "^2.9.0",
     "express": "^4.14.0",
     "lodash": "^4.17.2",
+    "moment": "^2.17.1",
     "morgan": "^1.7.0",
     "neo4j-driver": "^1.0.5",
     "react": "^15.4.1",
