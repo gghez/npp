@@ -142,8 +142,9 @@ test('search() should rely on neo4j request', async () => {
 
     expect(fakeDriver.session).toHaveBeenCalled();
     expect(fakeSession.run.mock.calls[0][0]).toEqual(`
-MATCH (p:Package)-[:DEPENDS_ON]->(d:Package)
+MATCH (p:Package)
 WHERE p.name CONTAINS {terms} OR p.description CONTAINS {terms} OR p.keywords CONTAINS {terms}
+OPTIONAL MATCH (p)-[:DEPENDS_ON]->(d:Package)
 WITH p, collect(d.name) as dependencies
 MATCH (c:Person)-[:CONTRIBUTES_ON]->(p)
 RETURN p, dependencies, collect(c.name) as contributors`);

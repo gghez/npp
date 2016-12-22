@@ -28,7 +28,3 @@ export class SearchBar extends React.Component {
         </form>;
     }
 }
-
-SearchBar.propTypes = {
-    search: React.PropTypes.string
-};

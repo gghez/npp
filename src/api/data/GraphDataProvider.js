@@ -43,8 +43,9 @@ RETURN p, dependencies, collect(c.name) as contributors`;
         }
 
         const cypher = `
-MATCH (p:Package)-[:DEPENDS_ON]->(d:Package)
+MATCH (p:Package)
 WHERE p.name CONTAINS {terms} OR p.description CONTAINS {terms} OR p.keywords CONTAINS {terms}
+OPTIONAL MATCH (p)-[:DEPENDS_ON]->(d:Package)
 WITH p, collect(d.name) as dependencies
 MATCH (c:Person)-[:CONTRIBUTES_ON]->(p)
 RETURN p, dependencies, collect(c.name) as contributors`;
