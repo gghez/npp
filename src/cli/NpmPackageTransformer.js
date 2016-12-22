@@ -22,7 +22,7 @@ export class NpmPackageTransformer {
         if (!pkg) return;
 
         if (!options.silent) {
-            console.log(`[${depth}] ${packageName} <-- ${chalk.blue('NPM')}`);
+            process.stdout.write(`${chalk.gray(`[${depth}]`)} ${chalk.blue('NPM')} --> ${packageName}`);
             if (options.verbose) {
                 console.log(chalk.gray(JSON.stringify(pkg)));
             }
@@ -78,7 +78,7 @@ RETURN p`;
         }
 
         if (!options.silent) {
-            console.log(`[${depth}] ${packageName} --> ${chalk.blue('Neo4j')}`);
+            process.stdout.write(` --> ${chalk.blue('Neo4j')}\n`);
             if (options.verbose) {
                 console.log(chalk.gray(JSON.stringify(result.records[0]._fields[0].properties)));
             }
