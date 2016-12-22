@@ -29,6 +29,9 @@ export class PackageList extends React.Component {
     }
 
     render() {
-        return <ul>{this.state.packages.map(p => <ResultItem key={p.name} {...p} />)}</ul>;
+        return <ul>{this.state.packages.map(p => {
+            const props = { ...p, search: this.props.params.search };
+            return <ResultItem key={p.name} {...props} />
+        })}</ul>;
     }
 }
