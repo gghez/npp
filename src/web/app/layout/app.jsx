@@ -8,7 +8,9 @@ export const App = (props) =>
         <header>
             <Header />
         </header>
-        <SearchBar search={props.params.search} />
-        <p><em>Example: <Link to="/search/neo4j">neo4j</Link></em></p>
-        {props.children}
+        <section className="container">
+            <SearchBar search={props.params.search} />
+            <p><em>Example: <Link to="/search/neo4j">neo4j</Link></em></p>
+            {props.children}
+        </section>
     </section>

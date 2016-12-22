@@ -1,19 +1,6 @@
 import React from "react";
 import moment from "moment";
 
-const HighlightedTerm = (props) => <span className="label label-warning">{props.term}</span>;
-
-const HighlightedTerms = (props) => {
-    const rx = new RegExp(props.term, 'gi');
-    let m, children = [], lastIndex = 0;
-    while ((m = rx.exec(props.text))) {
-        children.push(<span key={m.index}>{props.text.substring(lastIndex, m.index)}</span>);
-        children.push(<HighlightedTerm term={props.term} />)
-        lastIndex = m.index + props.term.length;
-    }
-    return <div>{children}</div>;
-};
-
 export const ResultItem = (props) =>
     <li className="list-group-item">
         <strong>
@@ -24,6 +11,26 @@ export const ResultItem = (props) =>
 
         <span className="label label-success pull-right">~ {moment(props.modified).fromNow()}</span>
 
-        <p><HighlightedTerms term={props.search} text={props.description} /></p>
+        <HighlightedText term={props.search} text={props.description} />
         <p><em>{props.keywords}</em></p>
     </li>
+
+const HighlightedText = (props) => {
+    const {term, text} = props;
+    const rx = new RegExp(term, 'gi');
+
+    let m, children = [], lastIndex = 0;
+    while ((m = rx.exec(text))) {
+        children = [
+            ...children,
+            <span key={m.index - 1}>{props.text.substring(lastIndex, m.index)}</span>,
+            <strong className="npp-highlighted" key={m.index}>{m[0]}</strong>
+        ];
+        lastIndex = m.index + props.term.length;
+    }
+
+    children = [...children, <span key={lastIndex}>{props.text.substr(lastIndex)}</span>];
+
+    return <div>{children}</div>;
+};
+
