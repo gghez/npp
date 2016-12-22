@@ -27,16 +27,16 @@ export class ScoreProvider {
         const allData = _(pkg)
             .concat(otherSimilarPackages)
             .uniqBy('name')
-            .map(this.getScoreData)
-            .value();
+            .map(this.getScoreData);
 
-        const maxDownloads = _.max(allData.map(d => d.downloads));
-        const maxPeople = _.max(allData.map(d => d.people));
+        const maxDownloads = allData.map(d => d.downloads).max();
+        const maxPeople = allData.map(d => d.people).max();
 
-        const activityMinDelta = _.min(allData.map(d => daysBetween(scoreAt, new Date(d.lastActivity))));
+        const activityMinDelta = allData.map(d => daysBetween(scoreAt, new Date(d.lastActivity))).min();
         const pkgActivityDelta = daysBetween(scoreAt, new Date(pkgData.lastActivity));
+        console.log(pkg.name, activityMinDelta, pkgActivityDelta);
 
-        const birthMinDelta = _.min(allData.map(d => daysBetween(scoreAt, new Date(d.birthDate))));
+        const birthMinDelta = allData.map(d => daysBetween(scoreAt, new Date(d.birthDate))).min();
         const pkgBirthDelta = daysBetween(scoreAt, new Date(pkgData.birthDate));
 
         const realScore = ScoreProvider.DOWNLOADS_WEIGHT * (pkgData.downloads / maxDownloads) +

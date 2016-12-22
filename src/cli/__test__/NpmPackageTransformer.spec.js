@@ -91,10 +91,10 @@ RETURN p`
         expected: `
 MERGE (p:Package {name:{name}})
 
-MERGE (m0:Person {name:"Greg"}) MERGE (m0)-[:CONTRIBUTES_ON]->(p)
-MERGE (m1:Person {name:"John"}) MERGE (m1)-[:CONTRIBUTES_ON]->(p)
-SET m0.email = "greg@greg.com",
-    m1.email = "john@doe.com",
+MERGE (c0:Person {name:{c0Name}}) MERGE (c0)-[:CONTRIBUTES_ON]->(p)
+MERGE (c1:Person {name:{c1Name}}) MERGE (c1)-[:CONTRIBUTES_ON]->(p)
+SET c0.email = {c0Email},
+    c1.email = {c1Email},
     p.description = {description},
     p.version = {version},
     p.created = {created},
@@ -151,10 +151,10 @@ RETURN p`
 MERGE (p:Package {name:{name}})
 MERGE (d0:Package {name:"lodash"}) MERGE (p)-[:DEPENDS_ON]->(d0)
 MERGE (d1:Package {name:"express"}) MERGE (p)-[:DEPENDS_ON]->(d1)
-MERGE (m0:Person {name:"Greg"}) MERGE (m0)-[:CONTRIBUTES_ON]->(p)
-MERGE (m1:Person {name:"John"}) MERGE (m1)-[:CONTRIBUTES_ON]->(p)
-SET m0.email = "greg@greg.com",
-    m1.email = "john@doe.com",
+MERGE (c0:Person {name:{c0Name}}) MERGE (c0)-[:CONTRIBUTES_ON]->(p)
+MERGE (c1:Person {name:{c1Name}}) MERGE (c1)-[:CONTRIBUTES_ON]->(p)
+SET c0.email = {c0Email},
+    c1.email = {c1Email},
     p.description = {description},
     p.version = {version},
     p.created = {created},
@@ -185,10 +185,10 @@ RETURN p`
 MERGE (p:Package {name:{name}})
 MERGE (d0:Package {name:"lodash"}) MERGE (p)-[:DEPENDS_ON]->(d0)
 MERGE (d1:Package {name:"express"}) MERGE (p)-[:DEPENDS_ON]->(d1)
-MERGE (m0:Person {name:"Greg"}) MERGE (m0)-[:CONTRIBUTES_ON]->(p)
-MERGE (m1:Person {name:"John"}) MERGE (m1)-[:CONTRIBUTES_ON]->(p)
-SET m0.email = "greg@greg.com",
-    m1.email = "john@doe.com",
+MERGE (c0:Person {name:{c0Name}}) MERGE (c0)-[:CONTRIBUTES_ON]->(p)
+MERGE (c1:Person {name:{c1Name}}) MERGE (c1)-[:CONTRIBUTES_ON]->(p)
+SET c0.email = {c0Email},
+    c1.email = {c1Email},
     p.description = {description},
     p.version = {version},
     p.created = {created},
@@ -210,15 +210,26 @@ RETURN p`
 
         expect(fakeDriver.session).toHaveBeenCalled();
         expect(fakeSession.run.mock.calls[0][0]).toEqual(testParams.expected);
-        expect(fakeSession.run.mock.calls[0][1]).toEqual(_(testParams.pkg).pick([
-            'name',
-            'description',
-            'version',
-            'created',
-            'modified',
-            'repository',
-            'downloads'
-        ]).assign({ keywords: (testParams.pkg.keywords || []).join(',') }).value());
+
+        const expectedParams = {
+            name: testParams.pkg.name,
+            description: testParams.pkg.description,
+            version: testParams.pkg.version,
+            created: testParams.pkg.created,
+            modified: testParams.pkg.modified,
+            repository: testParams.pkg.repository,
+            downloads: testParams.pkg.downloads,
+            keywords: (testParams.pkg.keywords || []).join(',')
+        };
+
+        if (Array.isArray(testParams.pkg.contributors)) {
+            testParams.pkg.contributors.forEach((c, i) => {
+                expectedParams[`c${i}Name`] = c.name;
+                expectedParams[`c${i}Email`] = c.email;
+            });
+        }
+
+        expect(fakeSession.run.mock.calls[0][1]).toEqual(expectedParams);
         expect(fakeSession.close).toHaveBeenCalled();
     });
 

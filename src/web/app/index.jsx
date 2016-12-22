@@ -13,6 +13,7 @@ render(
                 <IndexRedirect to="/" />
                 <Route path=":search" component={PackageList} />
             </Route>
+            <Route path="package/:package"
         </Route>
     </Router>,
     document.getElementById('app')

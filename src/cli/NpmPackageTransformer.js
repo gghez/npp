@@ -28,9 +28,9 @@ export class NpmPackageTransformer {
             }
         }
 
-        const dependencyRels = _(pkg.dependencies).map((dep,i) => `MERGE (d${i}:Package {name:"${dep}"}) MERGE (p)-[:DEPENDS_ON]->(d${i})`).value().join('\n');
-        const contribRels = _(pkg.contributors).map((m, i) => `MERGE (m${i}:Person {name:"${m.name}"}) MERGE (m${i})-[:CONTRIBUTES_ON]->(p)`).value().join('\n');
-        const contribEmails = _(pkg.contributors).map((m, i) => m.email ? `m${i}.email = "${m.email}",` : '').value().join('\n    ');
+        const dependencyRels = _(pkg.dependencies).map((dep, i) => `MERGE (d${i}:Package {name:"${dep}"}) MERGE (p)-[:DEPENDS_ON]->(d${i})`).value().join('\n');
+        const contribRels = _(pkg.contributors).map((m, i) => `MERGE (c${i}:Person {name:{c${i}Name}}) MERGE (c${i})-[:CONTRIBUTES_ON]->(p)`).value().join('\n');
+        const contribEmails = _(pkg.contributors).map((m, i) => m.email ? `c${i}.email = {c${i}Email},` : '').value().join('\n    ');
 
         const cypherRequest = `
 MERGE (p:Package {name:{name}})
@@ -66,6 +66,11 @@ RETURN p`;
                     'keywords'
                 ])
                 .assign({ keywords: (pkg.keywords || []).join(',') })
+                .assign(_(pkg.contributors).reduce((cdata, c, i) => {
+                    cdata[`c${i}Name`] = c.name;
+                    cdata[`c${i}Email`] = c.email;
+                    return cdata;
+                }, {}))
                 .value();
             result = await session.run(cypherRequest, params);
         } finally {
