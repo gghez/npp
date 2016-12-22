@@ -4,3 +4,7 @@ export function daysBetween(d1, d2) {
 
     return Math.round((d1 - d2) / 86400000);
 }
+
+export function weeksBetween(d1, d2) {
+    return Math.round(daysBetween(d1, d2) / 7);
+}

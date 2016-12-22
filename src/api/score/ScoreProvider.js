@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { daysBetween } from "../helper/dateHelper";
+import { daysBetween, weeksBetween } from "../helper/dateHelper";
 
 export class ScoreProvider {
     static DOWNLOADS_WEIGHT = 4;
@@ -32,9 +32,8 @@ export class ScoreProvider {
         const maxDownloads = allData.map(d => d.downloads).max();
         const maxPeople = allData.map(d => d.people).max();
 
-        const activityMinDelta = allData.map(d => daysBetween(scoreAt, new Date(d.lastActivity))).min();
-        const pkgActivityDelta = daysBetween(scoreAt, new Date(pkgData.lastActivity));
-        console.log(pkg.name, activityMinDelta, pkgActivityDelta);
+        const activityMinDelta = allData.map(d => weeksBetween(scoreAt, new Date(d.lastActivity))).min();
+        const pkgActivityDelta = Math.max(1, weeksBetween(scoreAt, new Date(pkgData.lastActivity)));
 
         const birthMinDelta = allData.map(d => daysBetween(scoreAt, new Date(d.birthDate))).min();
         const pkgBirthDelta = daysBetween(scoreAt, new Date(pkgData.birthDate));
