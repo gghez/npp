@@ -22,6 +22,7 @@ router.get('/search/:search', (req, res, next) => {
             res.send({
                 packages: _(scoreProvider.scoreAll(packages))
                     .orderBy('score', 'desc')
+                    .take(10)
                     .value()
             });
         })

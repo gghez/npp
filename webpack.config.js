@@ -1,4 +1,7 @@
+var webpack = require('webpack');
 var path = require('path');
+
+var isProd = /^prod/i.test(process.env.NODE_ENV);
 
 var WEB_DIR = path.resolve(__dirname, 'src/web');
 var DIST_DIR = path.resolve(WEB_DIR, 'dist');
@@ -22,7 +25,7 @@ var config = {
             {
                 test: /\.less$/,
                 loaders: ['style', 'css', 'less']
-            }, 
+            },
             {
                 test: /\.png$/,
                 loader: "url?limit=100000"
@@ -48,7 +51,10 @@ var config = {
                 loader: 'url?limit=10000&mimetype=image/svg+xml'
             }
         ]
-    }
+    },
+    plugins: isProd ? [
+        new webpack.optimize.UglifyJsPlugin({compress:{warnings:false}})
+    ] : []
 };
 
 module.exports = config;

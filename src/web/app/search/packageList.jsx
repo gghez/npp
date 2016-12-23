@@ -1,5 +1,6 @@
 import React from "react";
 import { ResultItem } from "./resultItem.jsx";
+import $ from "jquery/dist/jquery";
 
 export class PackageList extends React.Component {
     constructor(props) {
